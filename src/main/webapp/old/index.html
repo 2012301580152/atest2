@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<title>耗能分析系统</title>
+<link rel="stylesheet" href="layui/css/layui.css" media="all">
+<script src="js/jquery-1.11.3.min.js" charset="utf-8"></script>
+
+<script>
+    // document.domain = "caibaojian.com";
+    function setIframeHeight(iframe) {
+        if (iframe) {
+            var iframeWin = iframe.contentWindow || iframe.contentDocument.parentWindow;
+            if (iframeWin.document.body) {
+                iframe.height = iframeWin.document.documentElement.scrollHeight || iframeWin.document.body.scrollHeight;
+            }
+        }
+    };
+
+    $(document).ready(function(){
+        setIframeHeight(document.getElementById('external-frame'));
+    });
+
+
+</script>
+</head>
+<body ng-app="app">
+
+<div class="layui-layout layui-layout-admin" style="height: 100%;">
+	<div class="layui-header">
+
+		<div class="layui-logo">
+			<i class="layui-icon" style="font-size: 26px; color: #1E9FFF;">&#xe857;</i>
+			机械耗能分析系统
+		</div>
+		<ul class="layui-nav layui-layout-left" id="topnav">
+			<!-- <li class="layui-nav-item layui-this"><a href="">产品</a></li> -->
+		</ul>
+		<ul class="layui-nav layui-layout-right">
+			<li class="layui-nav-item">
+				<a href="javascript:;">控制台<span class="layui-badge">9</span></a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;">个人中心<span class="layui-badge-dot"></span></a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;">关于系统</a>
+			</li>
+			<li class="layui-nav-item">
+				<a href="javascript:;">
+					<img src="images/user/lab6410.jpg" class="layui-nav-img">
+					lab6410
+				</a>
+				<dl class="layui-nav-child">
+					<dd><a href="">基本资料</a></dd>
+					<dd><a href="">安全设置</a></dd>
+					<dd><a href="">退出</a></dd>
+				</dl>
+			</li>
+		</ul>
+	</div>
+
+
+	<div class="layui-side layui-bg-black" height="100%">
+		<div class="layui-side-scroll">
+			<ul class="layui-nav layui-nav-tree" lay-filter="left-menu" id="rigthnav">
+
+				<li class="layui-nav-item">
+                    <a>土石方施工</a>
+                    <dl class="layui-nav-child">
+                        <dd data-src="pages/tufangmingwa_final.html"><a href="">土方明挖</a></dd>
+                        <dd data-src="pages/tufangmingwa.html"><a href="">石方明挖</a></dd>
+
+
+                        <dd><a href="">石方洞挖</a></dd>
+                    </dl>
+                </li>
+				<li class="layui-nav-item"><a>填筑</a></li>
+				<li class="layui-nav-item"><a>混泥土</a></li>
+				<li class="layui-nav-item"><a>基础处理</a></li>
+				<li class="layui-nav-item"><a>砂石骨料生产</a></li>
+				<li class="layui-nav-item"><a>结果分析</a></li>
+
+			</ul>
+		</div>
+	</div>
+
+	<div class="layui-body" style="bottom: 0px;">
+		<div style="padding-left: 15px">
+			<!-- 内容主体区域 -->
+			<div class="layui-tab" lay-allowClose="true" lay-filter="tab-switch">
+				<div class="layui-tab-content">
+                    <iframe src="pages/tufangmingwa.html" frameborder="0" width="100%" height="1200px" id="external-frame" onload="setIframeHeight(this)" ></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="layui/layui.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+layui.use('element', function(){
+  var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块
+
+  //监听导航点击
+  element.on('nav(demo)', function(elem){
+    //console.log(elem)
+    layer.msg(elem.text());
+  });
+});
+</script>
+<script>
+
+
+    $("#rigthnav").on('click', 'dd', function(){
+       $(this).siblings().removeClass('layui-nav-itemed').end().addClass('layui-nav-itemed');
+       var url = $(this).attr('data-src');
+       $('#external-frame').attr('src', url);
+    });
+</script>
+</body>
+</html>

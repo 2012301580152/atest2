@@ -1,0 +1,433 @@
+{
+  "jixieEnergyUnit": {
+    "result": [
+      {
+        "id": 1,
+        "equipment": "羊足碾",
+        "type": "5-7t",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 1
+      },
+      {
+        "id": 2,
+        "equipment": "推土机",
+        "type": "",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 2
+      },
+      {
+        "id": 3,
+        "equipment": "蛙式打夯机",
+        "type": "",
+        "taishiDianUnit": 10,
+        "taishiYouUnit": null
+      },
+      {
+        "id": 4,
+        "equipment": "刨毛机",
+        "type": "",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 3
+      },
+      {
+        "id": 5,
+        "equipment": "挖掘机",
+        "type": "1m3",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 1
+      },
+      {
+        "id": 6,
+        "equipment": "挖掘机",
+        "type": "2m3",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 2
+      },
+      {
+        "id": 7,
+        "equipment": "挖掘机",
+        "type": "3m3",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 3
+      },
+      {
+        "id": 8,
+        "equipment": "自卸汽车",
+        "type": "5t",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 4
+      },
+      {
+        "id": 9,
+        "equipment": "自卸汽车",
+        "type": "10t",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 5
+      },
+      {
+        "id": 10,
+        "equipment": "自卸汽车",
+        "type": "20t",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 6
+      },
+      {
+        "id": 11,
+        "equipment": "装载机",
+        "type": "1m3",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 7
+      },
+      {
+        "id": 12,
+        "equipment": "装载机",
+        "type": "2m3",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 8
+      },
+      {
+        "id": 13,
+        "equipment": "装载机",
+        "type": "3m3",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 9
+      },
+      {
+        "id": 14,
+        "equipment": "推土机",
+        "type": "59kw",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 11
+      },
+      {
+        "id": 15,
+        "equipment": "推土机",
+        "type": "88kw",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 12
+      },
+      {
+        "id": 16,
+        "equipment": "手风钻",
+        "type": "手风钻",
+        "taishiDianUnit": 10,
+        "taishiYouUnit": null
+      },
+      {
+        "id": 17,
+        "equipment": "潜孔钻-80",
+        "type": "潜孔钻-80",
+        "taishiDianUnit": 20,
+        "taishiYouUnit": null
+      },
+      {
+        "id": 18,
+        "equipment": "履带钻-76",
+        "type": "履带钻-76",
+        "taishiDianUnit": null,
+        "taishiYouUnit": 30
+      }
+    ]
+  },
+  "project": {
+    "result": [
+      {
+        "id": 1,
+        "projectName": "乐康水库",
+        "part": "部位1",
+        "type": "土方挖运",
+        "num": 1000,
+        "typeNum": 1
+      },
+      {
+        "id": 2,
+        "projectName": "乐康水库",
+        "part": "部位1",
+        "type": "土方装运",
+        "num": 1000,
+        "typeNum": 2
+      },
+      {
+        "id": 3,
+        "projectName": "乐康水库",
+        "part": "部位1",
+        "type": "土方运输",
+        "num": 1000,
+        "typeNum": 3
+      },
+      {
+        "id": 4,
+        "projectName": "乐康水库",
+        "part": "部位1",
+        "type": "石方钻爆",
+        "num": 2000,
+        "typeNum": 4
+      },
+      {
+        "id": 5,
+        "projectName": "乐康水库",
+        "part": "部位1",
+        "type": "石方挖运",
+        "num": 2000,
+        "typeNum": 5
+      },
+      {
+        "id": 6,
+        "projectName": "乐康水库",
+        "part": "部位1",
+        "type": "石方装运",
+        "num": 2000,
+        "typeNum": 6
+      },
+      {
+        "id": 7,
+        "projectName": "乐康水库",
+        "part": "部位1",
+        "type": "石方运输",
+        "num": 2000,
+        "typeNum": 7
+      },
+      {
+        "id": 8,
+        "projectName": "乐康水库",
+        "part": "部位1",
+        "type": "洞挖钻爆",
+        "num": 3000,
+        "typeNum": 8
+      },
+      {
+        "id": 9,
+        "projectName": "乐康水库",
+        "part": "部位1",
+        "type": "洞挖挖运",
+        "num": 3000,
+        "typeNum": 9
+      },
+      {
+        "id": 10,
+        "projectName": "乐康水库",
+        "part": "部位1",
+        "type": "洞挖装运",
+        "num": 3000,
+        "typeNum": 10
+      },
+      {
+        "id": 11,
+        "projectName": "乐康水库",
+        "part": "部位1",
+        "type": "洞挖运输",
+        "num": 3000,
+        "typeNum": 11
+      },
+      {
+        "id": 12,
+        "projectName": "乐康水库",
+        "part": "部位1",
+        "type": "浇筑羊足碾压实",
+        "num": 4000,
+        "typeNum": 12
+      },
+      {
+        "id": 13,
+        "projectName": "乐康水库",
+        "part": "部位2",
+        "type": "土方挖运",
+        "num": 1500,
+        "typeNum": 1
+      },
+      {
+        "id": 14,
+        "projectName": "乐康水库",
+        "part": "部位2",
+        "type": "土方装运",
+        "num": 1500,
+        "typeNum": 2
+      },
+      {
+        "id": 15,
+        "projectName": "乐康水库",
+        "part": "部位2",
+        "type": "土方运输",
+        "num": 1500,
+        "typeNum": 3
+      },
+      {
+        "id": 16,
+        "projectName": "乐康水库",
+        "part": "部位2",
+        "type": "石方钻爆",
+        "num": 2500,
+        "typeNum": 4
+      },
+      {
+        "id": 17,
+        "projectName": "乐康水库",
+        "part": "部位2",
+        "type": "石方挖运",
+        "num": 2500,
+        "typeNum": 5
+      },
+      {
+        "id": 18,
+        "projectName": "乐康水库",
+        "part": "部位2",
+        "type": "石方装运",
+        "num": 2500,
+        "typeNum": 6
+      },
+      {
+        "id": 19,
+        "projectName": "乐康水库",
+        "part": "部位2",
+        "type": "石方运输",
+        "num": 2500,
+        "typeNum": 7
+      },
+      {
+        "id": 20,
+        "projectName": "乐康水库",
+        "part": "部位2",
+        "type": "洞挖钻爆",
+        "num": 3500,
+        "typeNum": 8
+      },
+      {
+        "id": 21,
+        "projectName": "乐康水库",
+        "part": "部位2",
+        "type": "洞挖挖运",
+        "num": 3500,
+        "typeNum": 9
+      },
+      {
+        "id": 22,
+        "projectName": "乐康水库",
+        "part": "部位2",
+        "type": "洞挖装运",
+        "num": 3500,
+        "typeNum": 10
+      },
+      {
+        "id": 23,
+        "projectName": "乐康水库",
+        "part": "部位2",
+        "type": "洞挖运输",
+        "num": 3500,
+        "typeNum": 11
+      },
+      {
+        "id": 24,
+        "projectName": "乐康水库",
+        "part": "部位2",
+        "type": "浇筑羊足碾压实",
+        "num": 4500,
+        "typeNum": 12
+      },
+      {
+        "id": 25,
+        "projectName": "乐康水库",
+        "part": "部位3",
+        "type": "土方挖运",
+        "num": 1500,
+        "typeNum": 1
+      },
+      {
+        "id": 26,
+        "projectName": "乐康水库",
+        "part": "部位3",
+        "type": "土方装运",
+        "num": 1500,
+        "typeNum": 2
+      },
+      {
+        "id": 27,
+        "projectName": "乐康水库",
+        "part": "部位3",
+        "type": "土方运输",
+        "num": 1500,
+        "typeNum": 3
+      },
+      {
+        "id": 28,
+        "projectName": "乐康水库",
+        "part": "部位3",
+        "type": "石方钻爆",
+        "num": 2500,
+        "typeNum": 4
+      },
+      {
+        "id": 29,
+        "projectName": "乐康水库",
+        "part": "部位3",
+        "type": "石方挖运",
+        "num": 2500,
+        "typeNum": 5
+      },
+      {
+        "id": 30,
+        "projectName": "乐康水库",
+        "part": "部位3",
+        "type": "石方装运",
+        "num": 2500,
+        "typeNum": 6
+      },
+      {
+        "id": 31,
+        "projectName": "乐康水库",
+        "part": "部位3",
+        "type": "石方运输",
+        "num": 2500,
+        "typeNum": 7
+      },
+      {
+        "id": 32,
+        "projectName": "乐康水库",
+        "part": "部位3",
+        "type": "洞挖钻爆",
+        "num": 3500,
+        "typeNum": 8
+      },
+      {
+        "id": 33,
+        "projectName": "乐康水库",
+        "part": "部位3",
+        "type": "洞挖挖运",
+        "num": 3500,
+        "typeNum": 9
+      },
+      {
+        "id": 34,
+        "projectName": "乐康水库",
+        "part": "部位3",
+        "type": "洞挖装运",
+        "num": 3500,
+        "typeNum": 10
+      },
+      {
+        "id": 35,
+        "projectName": "乐康水库",
+        "part": "部位3",
+        "type": "洞挖运输",
+        "num": 3500,
+        "typeNum": 11
+      },
+      {
+        "id": 36,
+        "projectName": "乐康水库",
+        "part": "部位3",
+        "type": "浇筑羊足碾压实",
+        "num": 4500,
+        "typeNum": 12
+      },
+      {
+        "id": 37,
+        "projectName": "高关水库",
+        "part": "部位3",
+        "type": "浇筑",
+        "num": 4500,
+        "typeNum": 12
+      }
+    ]
+  },
+  "tudianwa": {}
+}

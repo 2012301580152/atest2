@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>定额-土方施工机械-水电-挖装运</title>
+
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="../js/myapp.js"></script>
+    <script src="../js/angular.min.js"></script>
+    <script src="../js/echarts.js"></script>
+    <style>
+        td,th
+        {
+            vertical-align: middle !important;
+            text-align:center;
+        }
+    </style>
+
+</head>
+<body ng-app="app" style="height: 100%; margin: 0">
+<div class="container-fluid" ng-controller="MainCtrl as Ctrl">
+    <div class="row" >
+        <div class="col-md-12">
+            <h2>挖运</h2>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon">工程</span>
+                    <select class="form-control" ng-model="projectName" ng-change="projectNameChange(projectName)" ng-options="item[0].projectName for item in projectNames">
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon">工程部位</span>
+                    <select class="form-control" ng-model="part" ng-change="projectChange(part)" ng-options="item[0].part for item in partIndex">
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-12" ng-repeat="item in part">
+
+                <h2>{{ item.type }}</h2>
+                <div class="col-md-12" ng-init="Ctrl[item.type]['tuIndex'] = tuIndex">
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-addon">工程量(m³)</span>
+                            <input class="form-control" ng-model="item.num" readonly="readonly"></input>
+                        </div>
+
+                        <div class="input-group" ng-show="[1,2,3].in_array(item.typeNum)">
+                            <span class="input-group-addon">土分类</span>
+                            <select class="form-control" ng-model="Ctrl[item.type]['tuType']" ng-change="typeChange(Ctrl[item.type]['tuType'], 'wa', item.type, item.num)" ng-options="item[0].tuType for item in Ctrl[item.type]['tuIndex']">
+                            </select>
+                        </div>
+                        <div class="input-group" ng-show="[4,5,6,7].in_array(item.typeNum)">
+                            <span class="input-group-addon">土分类</span>
+                            <select class="form-control" ng-model="Ctrl[item.type]['tuType']" ng-change="typeChange(Ctrl[item.type]['tuType'], 'wa', item.type, item.num)" ng-options="item[0].tuType for item in Ctrl[item.type]['tuIndex']">
+                            </select>
+                        </div>
+                        <div class="input-group" ng-show="[8,9,10,11].in_array(item.typeNum)">
+                            <span class="input-group-addon">土分类</span>
+                            <select class="form-control" ng-model="Ctrl[item.type]['tuType']" ng-change="typeChange(Ctrl[item.type]['tuType'], 'wa', item.type, item.num)" ng-options="item[0].tuType for item in Ctrl[item.type]['tuIndex']">
+                            </select>
+                        </div>
+
+
+
+                        <div class="input-group">
+                            <span class="input-group-addon">挖掘机型号(m³)</span>
+                            <select class="form-control" ng-model="Ctrl[item.type]['waType']" ng-change="typeChange(Ctrl[item.type]['waType'], 'tui', item.type, item.num)" ng-options="item[0].waType for item in Ctrl[item.type]['waIndex']">
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">推土机型号(kW)</span>
+                            <select class="form-control" ng-model="Ctrl[item.type]['tuiType']" ng-change="typeChange(Ctrl[item.type]['tuiType'], 'xie', item.type, item.num)" ng-options="item[0].tuiType for item in Ctrl[item.type]['tuiIndex']">
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">自卸汽车型号(t)</span>
+                            <select class="form-control" ng-model="Ctrl[item.type]['xieType']" ng-change="typeChange(Ctrl[item.type]['xieType'], 'dis', item.type, item.num)" ng-options="item[0].xieType for item in Ctrl[item.type]['xieIndex']">
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">运距(km)</span>
+                            <select class="form-control" ng-model="Ctrl[item.type]['disType']" ng-change="typeChange(Ctrl[item.type]['disType'], 'last', item.type, item.num)" ng-options="item[0].distance for item in Ctrl[item.type]['disIndex']">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <table class="table table-bordered" align="center">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>工程量(m³)</th>
+                                    <th>土石分类</th>
+                                    <th>挖掘机(m³)</th>
+                                    <th>推土机(kW)</th>
+                                    <th>自卸汽车型号(t)</th>
+                                    <th>自卸汽车运距(km)</th>
+                                    <th>挖掘机能耗</th>
+                                    <th>推土机能耗</th>
+                                    <th>自卸汽车能耗</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in Ctrl[item.type]['tableData']">
+                                    <td>{{item.ID}}</td>
+                                    <td>{{item.projectNum}}</td>
+                                    <td>{{item.tuType}}</td>
+                                    <td>{{item.waType}}</td>
+                                    <td>{{item.tuiType}}</td>
+                                    <td>{{item.xieType}}</td>
+                                    <td>{{item.distance}}</td>
+
+                                    <td>{{item.waE}}</td>
+                                    <td>{{item.tuiE}}</td>
+                                    <td>{{item.xieE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+
+            </div>
+
+        </div>
+
+        <div class="col-md-12">
+            <table class="table table-bordered" align="center" ng-show="tableData.length">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>工程量(m³)</th>
+                        <th>土石分类</th>
+                        <th>挖掘机(m³)</th>
+                        <th>推土机(kW)</th>
+                        <th>自卸汽车型号(t)</th>
+                        <th>自卸汽车运距(km)</th>
+                        <th>挖掘机能耗</th>
+                        <th>推土机能耗</th>
+                        <th>自卸汽车能耗</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in tableData">
+                        <td>{{item.ID}}</td>
+                        <td>{{item.projectNum}}</td>
+                        <td>{{item.tuType}}</td>
+                        <td>{{item.waType}}</td>
+                        <td>{{item.tuiType}}</td>
+                        <td>{{item.xieType}}</td>
+                        <td>{{item.distance}}</td>
+
+                        <td>{{item.waE}}</td>
+                        <td>{{item.tuiE}}</td>
+                        <td>{{item.xieE}}</td>
+                        <td><button class="btn btn-sm btn-danger" ng-click="remove(item)">删除</button></td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-4">
+                土方
+                <div id="echartcontainertu" style="width:300px;height: 300px"></div>
+            </div>
+            <div class="col-md-4">
+                石方
+                <div id="echartcontainershi" style="width:300px;height: 300px"></div>
+            </div>
+            <div class="col-md-4">
+                洞挖
+                <div id="echartcontainerdong" style="width:300px;height: 300px"></div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div id="containerbar" style="height: 600px"></div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="../js/bootstrap.min.js"></script>
+
+
+<script>
+    var app = angular.module("app", []);
+    app.controller("MainCtrl", ['$scope', '$http', function ($scope, $http) {
+
+        Array.prototype.in_array = function(e) {
+            for(i=0;i<this.length;i++) {
+                if(this[i] == e)
+                    return true;
+            }
+                return false;
+        }
+
+        var self = this;
+        $scope.program = [];
+        $scope.tableData = [];
+        $scope.tuType = null;
+        $scope.waType = null;
+        $scope.tuiType = null;
+        $scope.xieType = null;
+        $scope.distance = null;
+        $scope.part = null;
+        var lian = {'wa': 0,'tui': 1,'xie': 2,'dis': 3,'last':4};
+        var lian2 = ['wa','tui','xie','dis','last'];
+
+        //<select class="form-control" ng-model="projectName" ng-change="projectNameChange(projectName)" ng-options="item for item in project.name">
+        $scope.projectNameChange = function(projectName){
+            //url = 'http://localhost:3000/project';
+            $scope['partIndex'] = G.groupBy(projectName, function (item) {
+                return [item["part"]];
+            });
+            console.log($scope.partIndex);
+        };
+        var getMainIndex = function(typeIndex){
+            for(var item in $scope.mainIndex){
+                if($scope.mainIndex[item][0] == typeIndex){
+                    return item;
+                }
+            }
+        };
+
+        $scope.save = function (item) {
+            url = '/tushi/tuDianWa/';
+            url = 'http://localhost:3000/tudianwa'
+            $http({
+                method: 'POST',
+                url: url
+                //url: url
+            }).then(
+                function success(response){
+                    $scope.program = response.data.result;
+                    $scope.tuIndex = G.groupBy($scope.program, function (item) {
+                        return [item.tuType];
+                    });
+                    //$scope.tuType = $scope.tuIndex[0][0].tuType;
+
+                    console.log($scope.mainIndex);
+                    console.log($scope.program);
+                },
+                function error(response){
+
+                }
+            );
+
+        };
+
+        $scope.remove = function (item) {
+            console.log(item);
+        };
+
+
+
+        $scope.projectChange = function(part){
+            console.log(part);
+        };
+        $scope.typeChange = function(typeIndex, type, ctrl, num){
+
+            if('last'==type && typeIndex){
+                var tempData = {};
+                tempData.tuType = typeIndex[0].tuType;
+                tempData.waType = typeIndex[0].waType;
+                tempData.tuiType = typeIndex[0].tuiType;
+                tempData.xieType = typeIndex[0].xieType;
+                tempData.distance = typeIndex[0].distance;
+
+                if (ctrl !== void(0)) {
+                    tempData.projectNum = num;
+                    tempData.waE = tempData.projectNum/100*typeIndex[0].waTaishiUnit*getUnit("挖掘机", tempData.waType+'m3');
+                    tempData.tuiE = tempData.projectNum/100*typeIndex[0].tuiTaishiUnit*getUnit("推土机", tempData.tuiType+'kw');
+                    tempData.xieE =  tempData.projectNum/100*typeIndex[0].xieTaishiUnit*getUnit("自卸汽车", tempData.xieType+'t');
+
+                    self[ctrl].tableData = [tempData];
+                    console.log(self[ctrl].tableData)
+                }
+
+            }else if(typeIndex){
+                for(var i = lian[type]; i < 5; i++) {
+                    $scope[lian2[i]+'Index'] = {};
+                }
+                $scope[type+'Index'] = G.groupBy(typeIndex, function (item) {
+                    if(type == 'dis'){
+                        return [item['distance']];
+                    }
+                    return [item[type+"Type"]];
+                });
+                if (ctrl !== void(0)) {
+                    self[ctrl][type+'Index'] = $scope[type+'Index'];
+                }
+
+            }
+            console.log($scope[type+'Index']);
+        };
+
+        url = '/tushi/tuDianWa/';
+        url = 'http://localhost:3000/tudianwa';
+        $http({
+            method: 'GET',
+            url: url
+            //url: url
+        }).then(
+            function success(response){
+                $scope.program = response.data.result;
+                $scope.tuIndex = G.groupBy($scope.program, function (item) {
+                    return [item.tuType];
+                });
+                //$scope.tuType = $scope.tuIndex[0][0].tuType;
+
+                console.log($scope.mainIndex);
+                console.log($scope.program);
+            },
+            function error(response){
+
+            }
+        );
+
+        url = '/tushi/project/'
+        url = 'http://localhost:3000/project';
+        $http({
+            method: 'GET',
+            url: url
+            //url: url
+        }).then(
+            function success(response){
+                $scope.project = response.data.result;
+                $scope.projectNames = G.groupBy($scope.project, function (item) {
+                    return [item.projectName];
+                });
+
+                console.log($scope.project);
+                console.log($scope.projectNames);
+            },
+            function error(response){
+
+            }
+        );
+
+        var getUnit = function(equipment, type) {
+            var temp = $scope.jixieEnergyUnit;
+            for(var item in temp){
+                if(temp[item].equipment == equipment && temp[item].type == type){
+                    return temp[item].taishiDianUnit?temp[item].taishiDianUnit:temp[item].taishiYouUnit;
+                }
+            }
+        };
+        url = '/tushi/jixieEnergyUnit/';
+        url = 'http://localhost:3000/jixieEnergyUnit';
+        $http({
+            method: 'GET',
+            url: url
+            //url: url
+        }).then(
+            function success(response){
+                $scope.jixieEnergyUnit = response.data.result;
+                console.log($scope.jixieEnergyUnit);
+            },
+            function error(response){
+
+            }
+        );
+
+
+
+        var domtu = document.getElementById("echartcontainertu");
+        var domshi = document.getElementById("echartcontainershi");
+        var domdong = document.getElementById("echartcontainerdong");
+        var myCharttu = echarts.init(domtu);
+        var myChartshi = echarts.init(domshi);
+        var myChartdong = echarts.init(domdong);
+        var app = {};
+        option = null;
+        app.title = '极坐标系下的堆叠柱状图';
+
+        option = {
+            angleAxis: {
+                type: 'category',
+                data: ['土方', '石方', '洞挖', '填筑', '浇灌'],
+                z: 10
+            },
+            radiusAxis: {
+            },
+            polar: {
+            },
+            series: [{
+                type: 'bar',
+                data: [1, 2, 3, 4, 3],
+                coordinateSystem: 'polar',
+                name: '挖运',
+                stack: 'a'
+            }, {
+                type: 'bar',
+                data: [2, 4, 6, 1, 3],
+                coordinateSystem: 'polar',
+                name: '装运',
+                stack: 'a'
+            }, {
+                type: 'bar',
+                data: [1, 2, 3, 4, 1],
+                coordinateSystem: 'polar',
+                name: '运输',
+                stack: 'a'
+            }],
+            legend: {
+                show: true,
+                data: ['挖运', '装运', '运输']
+            }
+        };
+        ;
+        if (option && typeof option === "object") {
+            myCharttu.setOption(option, true);
+            myChartshi.setOption(option, true);
+            myChartdong.setOption(option, true);
+        }
+
+
+
+        var dom = document.getElementById("containerbar");
+        var myChart = echarts.init(dom);
+        var app = {};
+        option = null;
+        var posList = [
+            'left', 'right', 'top', 'bottom',
+            'inside',
+            'insideTop', 'insideLeft', 'insideRight', 'insideBottom',
+            'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
+        ];
+
+        app.configParameters = {
+            rotate: {
+                min: -90,
+                max: 90
+            },
+            align: {
+                options: {
+                    left: 'left',
+                    center: 'center',
+                    right: 'right'
+                }
+            },
+            verticalAlign: {
+                options: {
+                    top: 'top',
+                    middle: 'middle',
+                    bottom: 'bottom'
+                }
+            },
+            position: {
+                options: echarts.util.reduce(posList, function (map, pos) {
+                    map[pos] = pos;
+                    return map;
+                }, {})
+            },
+            distance: {
+                min: 0,
+                max: 100
+            }
+        };
+
+        app.config = {
+            rotate: 90,
+            align: 'left',
+            verticalAlign: 'middle',
+            position: 'insideBottom',
+            distance: 15,
+            onChange: function () {
+                var labelOption = {
+                    normal: {
+                        rotate: app.config.rotate,
+                        align: app.config.align,
+                        verticalAlign: app.config.verticalAlign,
+                        position: app.config.position,
+                        distance: app.config.distance
+                    }
+                };
+                myChart.setOption({
+                    series: [{
+                        label: labelOption
+                    }, {
+                        label: labelOption
+                    }, {
+                        label: labelOption
+                    }, {
+                        label: labelOption
+                    }]
+                });
+            }
+        };
+
+
+        var labelOption = {
+            normal: {
+                show: true,
+                position: app.config.position,
+                distance: app.config.distance,
+                align: app.config.align,
+                verticalAlign: app.config.verticalAlign,
+                rotate: app.config.rotate,
+                formatter: '{c}  {name|{a}}',
+                fontSize: 16,
+                rich: {
+                    name: {
+                        textBorderColor: '#fff'
+                    }
+                }
+            }
+        };
+
+        option = {
+            color: ['#003366', '#006699', '#4cabce', '#e5323e'],
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['挖运', '装运', '运输', '钻爆']
+            },
+            toolbox: {
+                show: true,
+                orient: 'vertical',
+                left: 'right',
+                top: 'center',
+                feature: {
+                    mark: {show: true},
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            calculable: true,
+            xAxis: [
+                {
+                    type: 'category',
+                    axisTick: {show: false},
+                    data: ['2012', '2013', '2014', '2015', '2016']
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value'
+                }
+            ],
+            series: [
+                {
+                    name: '挖运',
+                    type: 'bar',
+                    barGap: 0,
+                    label: labelOption,
+                    data: [320, 332, 301, 334, 390]
+                },
+                {
+                    name: '装运',
+                    type: 'bar',
+                    label: labelOption,
+                    data: [220, 182, 191, 234, 290]
+                },
+                {
+                    name: '运输',
+                    type: 'bar',
+                    label: labelOption,
+                    data: [150, 232, 201, 154, 190]
+                },
+                {
+                    name: '钻爆',
+                    type: 'bar',
+                    label: labelOption,
+                    data: [98, 77, 101, 99, 40]
+                }
+            ]
+        };;
+        if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+        }
+
+    }]);
+</script>
+
+</body>
+</html>

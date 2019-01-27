@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>Bootstrap 101 Template</title>
+
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="../js/angular.min.js"></script>
+    <style>
+        td,th
+        {
+            vertical-align: middle !important;
+            text-align:center;
+        }
+    </style>
+</head>
+<body ng-app="app">
+<div class="container-fluid" >
+
+    <div class="row">
+        <div ng-controller="MainCtrl">
+            <div class="col-md-6" ng-repeat="method in program.types[0].methods">
+                <div class="panel panel-default">
+                <!-- Default panel contents -->
+                    <div class="panel-heading">{{method.name}}</div>
+                    <div class="panel-body">
+                        <div class="input-group">
+                            <span class="input-group-addon">型号</span>
+                            <select class="form-control" ng-model="$parent.wa[$index]"
+                                    ng-change="wzchange($index, method.waType.indexOf($parent.wa[$index]))"
+                                    ng-init="$parent.wa[$index]=method.waType[0];"
+                                    ng-options="x for x in method.waType">
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">推土机型号</span>
+                            <input class="form-control"
+                                   ng-model="method.tuiType[$parent.myindex[$index]]"
+                                   readonly="readonly">
+                            </input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table .table-bordered" align="center" ng-show="wzTableData.length">
+                <thead>
+                    <tr>
+                        <th rowspan="2">施工方法</th>
+                        <th rowspan="2">型号</th>
+                        <th rowspan="2">台时定额<br />(h/100m3)</th>
+                        <th rowspan="2">工程量<br />(万m3)</th>
+                        <th rowspan="2">需要台时<br />(h)</th>
+                        <th colspan="2">台时能耗</th>
+                        <th colspan="2">总能耗</th>
+                        <th colspan="2">人工定额（h）</th>
+                        <th colspan="2">总人工</th>
+                    </tr>
+                    <tr>
+                        <th>柴油(kg)</th>
+                        <th>电(kWh)</th>
+                        <th>柴油(kg)</th>
+                        <th>电(kWh)</th>
+                        <th>工时</th>
+                        <th>机械</th>
+                        <th>工时</th>
+                        <th>工日</th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="item in wzTableData" >
+                    <tr>
+                        <td rowspan="2">{{item.name}}</td>
+                        <td>{{item.watype}}</td>
+                        <td>{{item.waTaishiUnit | number:2}}</td>
+                        <td rowspan="2">{{item.workAmount | number:1}}</td>
+                        <td>{{item.waTaishi | number:1}}</td>
+                        <td>{{item.chaiyou | number:1}}</td>
+                        <td>&nbsp;</td>
+                        <td>{{item.chaiyouT | number:1}}</td>
+                        <td>&nbsp;</td>
+                        <td>{{item.rengong | number:1}}</td>
+                        <td>{{item.wajixie | number:1}}</td>
+                        <td>{{item.warengongT | number:1}}</td>
+                        <td rowspan="2">{{item.gongDays | number:1}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{item.tuitype}}</td>
+                        <td>{{item.tuiTaishiUnit | number:2}}</td>
+                        <td>{{item.tuiTaishi | number:1}}</td>
+                        <td>{{item.tuichaiyou | number:1}}</td>
+                        <td>&nbsp;</td>
+                        <td>{{item.tuichaiyouT | number:1}}</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>{{item.tuijixie | number:1}}</td>
+                        <td>{{item.tuirengongT | number:1}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div ng-controller="MainCtrl2">
+            <div class="panel panel-default">
+            <!-- Default panel contents -->
+                <div class="panel-heading">{{program.types[1].name}}</div>
+                <div class="panel-body">
+                    <div class="input-group">
+                        <span class="input-group-addon">自卸车型号</span>
+                        <select class="form-control" ng-model="zixieche"
+                                ng-options="x.type for x in program.types[1].zixieches">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">配套挖机</span>
+                        <select class="form-control" ng-model="capacity"
+                                ng-options="x.capacity for x in zixieche.capacitys">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            {{program.types[1].name}}
+            <hr>
+            {{program.types[1].zixieches}}
+            <hr>
+            {{program.types[1]}}{{program.types[1]}}
+        </div>
+
+    </div>
+</div>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="../js/bootstrap.min.js"></script>
+<script>
+    var app = angular.module("app", []);
+
+    url = "http://localhost:3000/workbook";
+    app.controller("MainCtrl2", ['$scope', '$http', function ($scope, $http) {
+        $scope.tableData = [];
+
+        var tableChange = function(index, TypeIndex, waTypeIndex){
+            var tempData = {};
+            var temp = $scope.program.types[1].zixieches;
+            tempData.type = temp[TypeIndex].type;
+            tempData.diatance = 6.0;    //修改
+            tempData.waType = temp[TypeIndex].capacitys[waTypeIndex].capacity;
+            var m1 = temp[TypeIndex].xishu[0];
+            var m2 = temp[TypeIndex].xishu[1];
+            var b = temp[TypeIndex].xishu[2];
+            tempData.taishiUnit = m1*tempData.diatance+m2*tempData.waType+b;
+            tempData.workAmount = 1;
+
+            temp.taishi = temp.taishiUnit*100*temp.workAmount;
+
+            temp.chaiyou = tempdate.chaiyou[station];
+            temp.tuichaiyou = tempdate.tuichaiyou[station];
+            temp.chaiyouT = temp.waTaishi*temp.chaiyou;
+            temp.tuichaiyouT = temp.tuiTaishi*temp.tuichaiyou;
+            temp.rengong = tempdate.rengong[station];
+            temp.wajixie = tempdate.jixie[station];
+            temp.tuijixie = tempdate.jixie2;
+            temp.warengongT = temp.workAmount * temp.rengong * 100 + temp.waTaishi * temp.wajixie;
+            temp.tuirengongT = temp.tuiTaishi * temp.tuijixie;
+            temp.gongDays = (temp.warengongT+temp.warengongT)/8;
+            $scope.wzTableData[index] = temp;
+
+        }
+
+        $http({
+            method: 'GET',
+            url: url
+        }).then(
+            function success(response){
+                $scope.program = response.data.programs[0].program;
+                $scope.zixieche = $scope.program.types[1].zixieches[0].type;
+
+                $scope.capacity = $scope.program.types[1].zixieches[0].capacitys[0].capacity;
+            },
+            function error(response){
+
+            }
+        )
+    }]);
+    app.controller("MainCtrl", ['$scope', '$http', function ($scope, $http) {
+
+        $scope.program = [];
+        $scope.myindex = [0,0];
+        $scope.workAmount = 1;
+        $scope.wzTableData = [null, null];
+        var waChange = function(index){
+            var tempdate = $scope.program.types[0].methods[index];
+            var station = $scope.myindex[index];
+            var temp = {};
+            temp.name = tempdate.name;
+            temp.watype = tempdate.waType[station];
+            temp.tuitype = tempdate.tuiType[station];
+            temp.waTaishiUnit = tempdate.taishiUnit[station];
+            temp.tuiTaishiUnit = tempdate.taishiUnit[station]/3;
+            temp.workAmount = $scope.workAmount;
+            temp.waTaishi = temp.waTaishiUnit*100*temp.workAmount;
+            temp.tuiTaishi = temp.tuiTaishiUnit*100*temp.workAmount;
+            temp.chaiyou = tempdate.chaiyou[station];
+            temp.tuichaiyou = tempdate.tuichaiyou[station];
+            temp.chaiyouT = temp.waTaishi*temp.chaiyou;
+            temp.tuichaiyouT = temp.tuiTaishi*temp.tuichaiyou;
+            temp.rengong = tempdate.rengong[station];
+            temp.wajixie = tempdate.jixie[station];
+            temp.tuijixie = tempdate.jixie2;
+            temp.warengongT = temp.workAmount * temp.rengong * 100 + temp.waTaishi * temp.wajixie;
+            temp.tuirengongT = temp.tuiTaishi * temp.tuijixie;
+            temp.gongDays = (temp.warengongT+temp.warengongT)/8;
+            $scope.wzTableData[index] = temp;
+        };
+        $scope.wzchange = function(index, myindex) {
+            $scope.myindex[index]= myindex;
+            waChange(index);
+        }
+
+        $http({
+            method: 'GET',
+            url: url
+        }).then(
+            function success(response){
+                $scope.program = response.data.programs[0].program;
+                $scope.wzchange(0, 0);
+                $scope.wzchange(1, 0);
+            },
+            function error(response){
+
+            }
+        )
+    }]);
+</script>
+
+</body>
+</html>

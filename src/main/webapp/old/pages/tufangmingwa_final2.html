@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>定额-土方施工机械-水电-挖装运</title>
+
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="../js/myapp.js"></script>
+    <script src="../js/angular.min.js"></script>
+    <script src="../js/echarts.js"></script>
+    <style>
+        td,th
+        {
+            vertical-align: middle !important;
+            text-align:center;
+        }
+    </style>
+
+</head>
+<body ng-app="app" style="height: 100%; margin: 0">
+<div class="container-fluid" ng-controller="MainCtrl as Ctrl">
+    <div class="row" >
+        <div class="col-md-12">
+            <h2>{{projectName[0].projectName}}</h2>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon">工程</span>
+                    <select class="form-control" ng-model="projectParts"
+                            ng-change="test(projectParts)"
+                            ng-options="key for (key, g) in projects"></select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-addon">工程部位</span>
+                    <select class="form-control" ng-model="projectTypes"
+                            ng-change="test(projectTypes)"
+                            ng-options="key for (key, g) in projectParts">
+                    </select>
+                </div>
+            </div>
+                
+            <div class="col-md-12" ng-repeat="item in projectTypes">
+
+                <h2>{{item.projectType}}</h2>
+                <!--<h2>土方开挖m3</h2>-->
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="item.amount"
+                               readonly="readonly"></input>
+                    </div>
+
+                    <div class="input-group" ng-init="getNext(projectDetails[item.type].data, divitem[0], item.type)"
+                         ng-repeat="divitem in projectDetails[item.type].classic.list">
+                        <span class="input-group-addon">{{divitem[1]}}</span>
+                        <select class="form-control" ng-model="no1tutype"
+
+
+                                ng-options="key for (key, g) in divType[No][divitem[1]]"></select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <span class="input-group-addon">土分类</span>
+                        <select class="form-control" ng-model="no1tutype"
+                                ng-change="projectNameChange(no1tutype, 'no1equip1s', 'equip1')"
+                                ng-options="item[0].tuType for item in no1tutypes"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">设备1</span>
+                        <select class="form-control" ng-model="no1equip1"
+                                ng-change="projectNameChange(no1equip1, 'no1equip1Types', 'equip1Type')"
+                                ng-options="item[0].equip1 for item in no1equip1s"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no1equip1Type"
+                                ng-change="equipChange(no1equip1Type, 'no1equip2s', 1, no1equip1[0].equip1,
+                                no1equip1Type[0].equip1Type, 1)"
+                                ng-options="item[0].equip1Type for item in no1equip1Types"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">设备2</span>
+                        <select class="form-control" ng-model="no1equip2"
+                                ng-change="projectNameChange(no1equip2, 'no1equip2Types', 'equip2Type')"
+                                ng-options="item[0].equip2 for item in no1equip2s"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no1equip2Type"
+                                ng-change="equipChange(no1equip2Type, 'no1equip3s', 2, no1equip2[0].equip2,
+                                no1equip2Type[0].equip2Type, 1)"
+                                ng-options="item[0].equip2Type for item in no1equip2Types"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">自卸汽车</span>
+                        <select class="form-control" ng-model="no1equip3"
+                                ng-change="projectNameChange(no1equip3, 'no1equip3Types', 'equip3Type')"
+                                ng-options="item[0].equip3 for item in no1equip3s"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no1equip3Type"
+                                ng-change="equipChange(no1equip2Type, undefined, 3,  no1equip3[0].equip3,
+                                no1equip3Type[0].equip3Type, 1,3)"
+                                ng-options="item[0].equip3Type for item in no1equip3Types"></select>
+                    </div>
+
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                            <tr>
+                                <!--<th>ID</th>-->
+                                <th>工程量(m³)</th>
+                                <th>土分类</th>
+                                <th>设备1</th>
+                                <th>型号</th>
+                                <th ng-show="no1equip1UnitO!=undefined">台时耗油</th>
+                                <th ng-show="no1equip1UnitE!=undefined">台时耗电</th>
+
+                                <th>设备2</th>
+                                <th>型号</th>
+                                <th ng-show="no1equip2UnitO!=undefined">台时耗油</th>
+                                <th ng-show="no1equip2UnitE!=undefined">台时耗电</th>
+
+                                <th>自卸汽车</th>
+                                <th>型号</th>
+                                <th ng-show="no1equip3UnitO!=undefined">台时耗油</th>
+                                <th ng-show="no1equip3UnitE!=undefined">台时耗电</th>
+
+
+                                <th ng-show="no1UnitO!=0">总耗油</th>
+                                <th ng-show="no1UnitE!=0">总耗电</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{projectType[1].amount}}</td>
+                                <td>{{no1tutype[0].tuType}}</td>
+                                <td>{{no1equip1[0].equip1}}</td>
+                                <td>{{no1equip1Type[0].equip1Type}}</td>
+                                <td ng-show="no1equip1UnitO!=undefined">{{no1equip1UnitO}}</td>
+                                <td ng-show="no1equip1UnitE!=undefined">{{no1equip1UnitE}}</td>
+
+                                <td>{{no1equip2[0].equip2}}</td>
+                                <td>{{no1equip2Type[0].equip2Type}}</td>
+                                <td ng-show="no1equip2UnitO!=undefined">{{no1equip1UnitO}}</td>
+                                <td ng-show="no1equip2UnitE!=undefined">{{no1equip1UnitE}}</td>
+                                <td>{{no1equip3[0].equip3}}</td>
+                                <td>{{no1equip3Type[0].equip3Type}}</td>
+                                <td ng-show="no1equip3UnitO!=undefined">{{no1equip1UnitO}}</td>
+                                <td ng-show="no1equip3UnitE!=undefined">{{no1equip1UnitE}}</td>
+
+                                <td ng-show="no1UnitO!=0">{{no1UnitO}}</td>
+                                <td ng-show="no1UnitE!=0">{{no1UnitE}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-12" ng-show="projectType[2]!=undefined">
+
+                <h2>{{projectType[2].projectType}}</h2>
+                <h2>石方明挖m3</h2>
+                <div class="col-md-3">
+                    <!--孔深m	岩石级别	设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	石渣运输比例-->
+
+
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[2].amount" readonly="readonly"></input>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">岩石级别</span>
+                        <select class="form-control" ng-model="no2rocktype"
+                                ng-change="projectNameChange(no2rocktype, 'no2kongshens', 'kongShen')"
+                                ng-options="item[0].rockType for item in no2rocktypes"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">孔深</span>
+                        <select class="form-control" ng-model="no2kongshen"
+                                ng-change="projectNameChange(no2kongshen, 'no2equip1s', 'equip1')"
+                                ng-options="item[0].kongShen for item in no2kongshens"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">设备1</span>
+                        <select class="form-control" ng-model="no2equip1"
+                                ng-change="projectNameChange(no2equip1, 'no2equip1Types', 'equip2Type')"
+                                ng-options="item[0].equip1 for item in no2equip1s"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no2equip1Type"
+                                ng-change="equipChange(no2equip1Type, 'no2equip2s', 1, no2equip1[0].equip1,
+                                no2equip1Type[0].equip1Type, 2)"
+                                ng-options="item[0].equip2Type for item in no2equip1Types"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">设备2</span>
+                        <select class="form-control" ng-model="no2equip2"
+                                ng-change="projectNameChange(no2equip2, 'no2equip2Types', 'equip2Type')"
+                                ng-options="item[0].equip2 for item in no2equip2s"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no2equip2Type"
+                                ng-change="equipChange(no2equip2Type, undefined, 2, no2equip2[0].equip2,
+                                no2equip2Type[0].equip2Type, 2, 2, ['equip2Taishi','shizhaRate'])"
+                                ng-options="item[0].equip2Type for item in no2equip2Types"></select>
+                    </div>
+                </div>
+
+
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                        <tr>
+                            <!--<th>ID</th>-->
+                            <th>工程量(m³)</th>
+                            <th>土分类</th>
+                            <th>设备1</th>
+                            <th>型号</th>
+                            <th ng-show="no1equip1UnitO!=undefined">台时耗油</th>
+                            <th ng-show="no1equip1UnitE!=undefined">台时耗电</th>
+
+                            <th>设备2</th>
+                            <th>型号</th>
+                            <th ng-show="no1equip2UnitO!=undefined">台时耗油</th>
+                            <th ng-show="no1equip2UnitE!=undefined">台时耗电</th>
+
+                            <th>自卸汽车</th>
+                            <th>型号</th>
+                            <th ng-show="no1equip3UnitO!=undefined">台时耗油</th>
+                            <th ng-show="no1equip3UnitE!=undefined">台时耗电</th>
+
+
+                            <th ng-show="no1UnitO!=0">总耗油</th>
+                            <th ng-show="no1UnitE!=0">总耗电</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{projectType[1].amount}}</td>
+                            <td>{{no1tutype[0].tuType}}</td>
+                            <td>{{no1equip1[0].equip1}}</td>
+                            <td>{{no1equip1Type[0].equip1Type}}</td>
+                            <td ng-show="no1equip1UnitO!=undefined">{{no1equip1UnitO}}</td>
+                            <td ng-show="no1equip1UnitE!=undefined">{{no1equip1UnitE}}</td>
+
+                            <td>{{no1equip2[0].equip2}}</td>
+                            <td>{{no1equip2Type[0].equip2Type}}</td>
+                            <td ng-show="no1equip2UnitO!=undefined">{{no1equip1UnitO}}</td>
+                            <td ng-show="no1equip2UnitE!=undefined">{{no1equip1UnitE}}</td>
+                            <td>{{no1equip3[0].equip3}}</td>
+                            <td>{{no1equip3Type[0].equip3Type}}</td>
+                            <td ng-show="no1equip3UnitO!=undefined">{{no1equip1UnitO}}</td>
+                            <td ng-show="no1equip3UnitE!=undefined">{{no1equip1UnitE}}</td>
+
+                            <td ng-show="no1UnitO!=0">{{no1UnitO}}</td>
+                            <td ng-show="no1UnitE!=0">{{no1UnitE}}</td>
+                            <td>
+                                <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+            <div class="col-md-12" ng-show="projectType[2]!=undefined">
+
+                <div class="col-md-3">
+
+                    <!--设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	设备3	设备3型号	运距	设备3台时	增加1km运距-->
+                    <h2>石方明挖装运</h2>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">设备1</span>
+                        <select class="form-control" ng-model="no2zequip1"
+                                ng-change="projectNameChange(no2zequip1, 'no2zequip1Types', 'equip1Type')"
+                                ng-options="item[0].equip1 for item in no2zequip1s"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no2zequip1Type"
+                                ng-change="equipChange(no2zequip1Type, 'no2zequip2s', 1, no2zequip1[0].equip1,
+                                no2zequip1Type[0].equip1Type, 2)"
+                                ng-options="item[0].equip1Type for item in no2zequip1Types"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">设备2</span>
+                        <select class="form-control" ng-model="no2zequip2"
+                                ng-change="projectNameChange(no2zequip2, 'no2zequip2Types', 'equip2Type')"
+                                ng-options="item[0].equip2 for item in no2zequip2s"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no2zequip2Type"
+                                ng-change="equipChange(no2zequip2Type, 'no2zequip3s', 2, no2zequip2[0].equip2,
+                                no2zequip2Type[0].equip2Type, 2)"
+                                ng-options="item[0].equip2Type for item in no2zequip2Types"></select>
+                    </div>
+
+
+
+                    <div class="input-group">
+                        <span class="input-group-addon">设备3</span>
+                        <select class="form-control" ng-model="no2zequip3"
+                                ng-change="projectNameChange(no2zequip3, 'no2zequip3Types', 'equip3Type')"
+                                ng-options="item[0].equip3 for item in no2zequip3s"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no2zequip3Type"
+                                ng-change="equipChange(no2zequip3Type, undefined, 3,  no2zequip3[0].equip3,
+                                no2zequip3Type[0].equip3Type, 2,3, ['yunju', 'in1yun'])"
+                                ng-options="item[0].equip3Type for item in no2zequip3Types"></select>
+                    </div>
+
+
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                        <tr>
+                            <!--<th>ID</th>-->
+                            <th>工程量(m³)</th>
+                            <th>土分类</th>
+                            <th>设备1</th>
+                            <th>型号</th>
+                            <th ng-show="no1equip1UnitO!=undefined">台时耗油</th>
+                            <th ng-show="no1equip1UnitE!=undefined">台时耗电</th>
+
+                            <th>设备2</th>
+                            <th>型号</th>
+                            <th ng-show="no1equip2UnitO!=undefined">台时耗油</th>
+                            <th ng-show="no1equip2UnitE!=undefined">台时耗电</th>
+
+                            <th>自卸汽车</th>
+                            <th>型号</th>
+                            <th ng-show="no1equip3UnitO!=undefined">台时耗油</th>
+                            <th ng-show="no1equip3UnitE!=undefined">台时耗电</th>
+
+
+                            <th ng-show="no1UnitO!=0">总耗油</th>
+                            <th ng-show="no1UnitE!=0">总耗电</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{projectType[1].amount}}</td>
+                            <td>{{no1tutype[0].tuType}}</td>
+                            <td>{{no1equip1[0].equip1}}</td>
+                            <td>{{no1equip1Type[0].equip1Type}}</td>
+                            <td ng-show="no1equip1UnitO!=undefined">{{no1equip1UnitO}}</td>
+                            <td ng-show="no1equip1UnitE!=undefined">{{no1equip1UnitE}}</td>
+
+                            <td>{{no1equip2[0].equip2}}</td>
+                            <td>{{no1equip2Type[0].equip2Type}}</td>
+                            <td ng-show="no1equip2UnitO!=undefined">{{no1equip1UnitO}}</td>
+                            <td ng-show="no1equip2UnitE!=undefined">{{no1equip1UnitE}}</td>
+                            <td>{{no1equip3[0].equip3}}</td>
+                            <td>{{no1equip3Type[0].equip3Type}}</td>
+                            <td ng-show="no1equip3UnitO!=undefined">{{no1equip1UnitO}}</td>
+                            <td ng-show="no1equip3UnitE!=undefined">{{no1equip1UnitE}}</td>
+
+                            <td ng-show="no1UnitO!=0">{{no1UnitO}}</td>
+                            <td ng-show="no1UnitE!=0">{{no1UnitE}}</td>
+                            <td>
+                                <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="col-md-12" ng-show="projectType[3]!=undefined">
+
+                <!--<h2>{{projectType[3].projectType}}</h2>-->
+                <h2>石方洞挖m3</h2>
+                <div class="col-md-3">
+                    <!--孔深m	岩石级别	设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	石渣运输比例-->
+
+
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[3].amount" readonly="readonly"></input>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">岩石级别</span>
+                        <select class="form-control" ng-model="no3rocktype"
+                                ng-change="projectNameChange(no3rocktype, 'no3waareas', 'waArea')"
+                                ng-options="item[0].rackType for item in no3racktypes"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">孔深</span>
+                        <select class="form-control" ng-model="no3waarea"
+                                ng-change="projectNameChange(no3waarea, 'no3equip1s', 'equip1')"
+                                ng-options="item[0].waArea for item in no3waareas"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">设备1</span>
+                        <select class="form-control" ng-model="no3equip1"
+                                ng-change="projectNameChange(no3equip1, 'no3equip1Types', 'equip1Type')"
+                                ng-options="item[0].equip1 for item in no3equip1s"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no3equip1Type"
+                                ng-change="equipChange(no3equip1Type, 'no3equip2s', 1, no3equip1[0].equip1,
+                                no3equip1Type[0].equip1Type, 3)"
+                                ng-options="item[0].equip2Type for item in no3equip1Types"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">设备2</span>
+                        <select class="form-control" ng-model="no3equip2"
+                                ng-change="projectNameChange(no3equip2, 'no3equip2Types', 'equip2Type')"
+                                ng-options="item[0].equip2 for item in no3equip2s"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no3equip2Type"
+                                ng-change="equipChange(no3equip2Type, 'no3equip3Types', 2, no3equip2[0].equip2,
+                                no3equip2Type[0].equip2Type, 3)"
+                                ng-options="item[0].equip2Type for item in no3equip2Types"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">设备3</span>
+                        <select class="form-control" ng-model="no3equip3"
+                                ng-change="projectNameChange(no3equip3, 'no3equip3Types', 'equip3Type')"
+                                ng-options="item[0].equip3 for item in no3equip3Types"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no3equip3Type"
+                                ng-change="equipChange(no3equip3Type, undefined, 3, no3equip3[0].equip3,
+                                no3equip3Type[0].equip3Type, 3, 3, ['in1yun', 'yunju'])"
+                                ng-options="item[0].equip3Type for item in no3equip3Types"></select>
+                    </div>
+                </div>
+
+
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                        <tr>
+                            <!--<th>ID</th>-->
+                            <th>工程量(m³)</th>
+                            <th>土分类</th>
+                            <th>设备1</th>
+                            <th>型号</th>
+                            <th ng-show="no1equip1UnitO!=undefined">台时耗油</th>
+                            <th ng-show="no1equip1UnitE!=undefined">台时耗电</th>
+
+                            <th>设备2</th>
+                            <th>型号</th>
+                            <th ng-show="no1equip2UnitO!=undefined">台时耗油</th>
+                            <th ng-show="no1equip2UnitE!=undefined">台时耗电</th>
+
+                            <th>自卸汽车</th>
+                            <th>型号</th>
+                            <th ng-show="no1equip3UnitO!=undefined">台时耗油</th>
+                            <th ng-show="no1equip3UnitE!=undefined">台时耗电</th>
+
+
+                            <th ng-show="no1UnitO!=0">总耗油</th>
+                            <th ng-show="no1UnitE!=0">总耗电</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{projectType[1].amount}}</td>
+                            <td>{{no1tutype[0].tuType}}</td>
+                            <td>{{no1equip1[0].equip1}}</td>
+                            <td>{{no1equip1Type[0].equip1Type}}</td>
+                            <td ng-show="no1equip1UnitO!=undefined">{{no1equip1UnitO}}</td>
+                            <td ng-show="no1equip1UnitE!=undefined">{{no1equip1UnitE}}</td>
+
+                            <td>{{no1equip2[0].equip2}}</td>
+                            <td>{{no1equip2Type[0].equip2Type}}</td>
+                            <td ng-show="no1equip2UnitO!=undefined">{{no1equip1UnitO}}</td>
+                            <td ng-show="no1equip2UnitE!=undefined">{{no1equip1UnitE}}</td>
+                            <td>{{no1equip3[0].equip3}}</td>
+                            <td>{{no1equip3Type[0].equip3Type}}</td>
+                            <td ng-show="no1equip3UnitO!=undefined">{{no1equip1UnitO}}</td>
+                            <td ng-show="no1equip3UnitE!=undefined">{{no1equip1UnitE}}</td>
+
+                            <td ng-show="no1UnitO!=0">{{no1UnitO}}</td>
+                            <td ng-show="no1UnitE!=0">{{no1UnitE}}</td>
+                            <td>
+                                <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+            <div class="col-md-12" ng-show="projectType[2]!=undefined">
+
+                <div class="col-md-3">
+
+                    <!--设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	设备3	设备3型号	运距	设备3台时	增加1km运距-->
+                    <h2>石方明挖装运</h2>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">设备1</span>
+                        <select class="form-control" ng-model="no2zequip1"
+                                ng-change="projectNameChange(no2zequip1, 'no2zequip1Types', 'equip1Type')"
+                                ng-options="item[0].equip1 for item in no2zequip1s"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no2zequip1Type"
+                                ng-change="equipChange(no2zequip1Type, 'no2zequip2s', 1, no2zequip1[0].equip1,
+                                no2zequip1Type[0].equip1Type, 2)"
+                                ng-options="item[0].equip1Type for item in no2zequip1Types"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">设备2</span>
+                        <select class="form-control" ng-model="no2zequip2"
+                                ng-change="projectNameChange(no2zequip2, 'no2zequip2Types', 'equip2Type')"
+                                ng-options="item[0].equip2 for item in no2zequip2s"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no2zequip2Type"
+                                ng-change="equipChange(no2zequip2Type, 'no2zequip3s', 2, no2zequip2[0].equip2,
+                                no2zequip2Type[0].equip2Type, 2)"
+                                ng-options="item[0].equip2Type for item in no2zequip2Types"></select>
+                    </div>
+
+
+
+                    <div class="input-group">
+                        <span class="input-group-addon">设备3</span>
+                        <select class="form-control" ng-model="no2zequip3"
+                                ng-change="projectNameChange(no2zequip3, 'no2zequip3Types', 'equip3Type')"
+                                ng-options="item[0].equip3 for item in no2zequip3s"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control" ng-model="no2zequip3Type"
+                                ng-change="equipChange(no2zequip3Type, undefined, 3,  no2zequip3[0].equip3,
+                                no2zequip3Type[0].equip3Type, 2,3, ['yunju', 'in1yun'])"
+                                ng-options="item[0].equip3Type for item in no2zequip3Types"></select>
+                    </div>
+
+
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                        <tr>
+                            <!--<th>ID</th>-->
+                            <th>工程量(m³)</th>
+                            <th>土分类</th>
+                            <th>设备1</th>
+                            <th>型号</th>
+                            <th ng-show="no1equip1UnitO!=undefined">台时耗油</th>
+                            <th ng-show="no1equip1UnitE!=undefined">台时耗电</th>
+
+                            <th>设备2</th>
+                            <th>型号</th>
+                            <th ng-show="no1equip2UnitO!=undefined">台时耗油</th>
+                            <th ng-show="no1equip2UnitE!=undefined">台时耗电</th>
+
+                            <th>自卸汽车</th>
+                            <th>型号</th>
+                            <th ng-show="no1equip3UnitO!=undefined">台时耗油</th>
+                            <th ng-show="no1equip3UnitE!=undefined">台时耗电</th>
+
+
+                            <th ng-show="no1UnitO!=0">总耗油</th>
+                            <th ng-show="no1UnitE!=0">总耗电</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{projectType[1].amount}}</td>
+                            <td>{{no1tutype[0].tuType}}</td>
+                            <td>{{no1equip1[0].equip1}}</td>
+                            <td>{{no1equip1Type[0].equip1Type}}</td>
+                            <td ng-show="no1equip1UnitO!=undefined">{{no1equip1UnitO}}</td>
+                            <td ng-show="no1equip1UnitE!=undefined">{{no1equip1UnitE}}</td>
+
+                            <td>{{no1equip2[0].equip2}}</td>
+                            <td>{{no1equip2Type[0].equip2Type}}</td>
+                            <td ng-show="no1equip2UnitO!=undefined">{{no1equip1UnitO}}</td>
+                            <td ng-show="no1equip2UnitE!=undefined">{{no1equip1UnitE}}</td>
+                            <td>{{no1equip3[0].equip3}}</td>
+                            <td>{{no1equip3Type[0].equip3Type}}</td>
+                            <td ng-show="no1equip3UnitO!=undefined">{{no1equip1UnitO}}</td>
+                            <td ng-show="no1equip3UnitE!=undefined">{{no1equip1UnitE}}</td>
+
+                            <td ng-show="no1UnitO!=0">{{no1UnitO}}</td>
+                            <td ng-show="no1UnitE!=0">{{no1UnitE}}</td>
+                            <td>
+                                <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                
+                
+            <div class="col-md-12" ng-show="projectType[3]!=undefined">
+
+                <h2>石方洞挖m3</h2>
+                <div class="col-md-3">
+
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[3].amount" readonly="readonly"></input>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">岩石级别</span>
+                        <select class="form-control"></select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <span class="input-group-addon">开挖断面</span>
+                        <select class="form-control"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">开挖设备1</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">开挖设备2</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">开挖设备3</span>
+                        <select class="form-control"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">装载设备1</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">装载设备2</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">自卸汽车</span>
+                        <select class="form-control"></select>
+                    </div>
+
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>工程量(m³)</th>
+                                <th>土石分类</th>
+                                <th>挖掘机(m³)</th>
+                                <th>推土机(kW)</th>
+                                <th>自卸汽车型号(t)</th>
+                                <th>自卸汽车运距(km)</th>
+                                <th>挖掘机能耗</th>
+                                <th>推土机能耗</th>
+                                <th>自卸汽车能耗</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in Ctrl[item.type]['tableData']">
+                                <td>{{item.ID}}</td>
+                                <td>{{item.projectNum}}</td>
+                                <td>{{item.tuType}}</td>
+                                <td>{{item.waType}}</td>
+                                <td>{{item.tuiType}}</td>
+                                <td>{{item.xieType}}</td>
+                                <td>{{item.distance}}</td>
+
+                                <td>{{item.waE}}</td>
+                                <td>{{item.tuiE}}</td>
+                                <td>{{item.xieE}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-12" ng-show="projectType[4]!=undefined">
+<!--  -->
+                <h2>土石方填筑m3</h2>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[4].amount" readonly="readonly"></input>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">岩石级别</span>
+                        <select class="form-control"></select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <span class="input-group-addon">开挖断面</span>
+                        <select class="form-control"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">开挖设备1</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">开挖设备2</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">开挖设备3</span>
+                        <select class="form-control"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">装载设备1</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">装载设备2</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">自卸汽车</span>
+                        <select class="form-control"></select>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>工程量(m³)</th>
+                                <th>土石分类</th>
+                                <th>挖掘机(m³)</th>
+                                <th>推土机(kW)</th>
+                                <th>自卸汽车型号(t)</th>
+                                <th>自卸汽车运距(km)</th>
+                                <th>挖掘机能耗</th>
+                                <th>推土机能耗</th>
+                                <th>自卸汽车能耗</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in Ctrl[item.type]['tableData']">
+                                <td>{{item.ID}}</td>
+                                <td>{{item.projectNum}}</td>
+                                <td>{{item.tuType}}</td>
+                                <td>{{item.waType}}</td>
+                                <td>{{item.tuiType}}</td>
+                                <td>{{item.xieType}}</td>
+                                <td>{{item.distance}}</td>
+                                <td>{{item.waE}}</td>
+                                <td>{{item.tuiE}}</td>
+                                <td>{{item.xieE}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-12" ng-show="projectType[5]!=undefined">
+<!--  -->
+                <h2>混凝土（常态）m3</h2>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[5].amount" readonly="readonly"></input>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">水平运输</span>
+                        <select class="form-control"></select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <span class="input-group-addon">运距</span>
+                        <select class="form-control"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">型号</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">洞内/外</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">垂直运输设备1</span>
+                        <select class="form-control"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">垂直运输设备1</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">浇筑层厚度</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">作业方式</span>
+                        <select class="form-control"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">振动机</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">变频机组</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">平仓振捣机</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">风水枪</span>
+                        <select class="form-control"></select>
+                    </div>
+                    
+                    
+                    
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>工程量(m³)</th>
+                                <th>土石分类</th>
+                                <th>挖掘机(m³)</th>
+                                <th>推土机(kW)</th>
+                                <th>自卸汽车型号(t)</th>
+                                <th>自卸汽车运距(km)</th>
+                                <th>挖掘机能耗</th>
+                                <th>推土机能耗</th>
+                                <th>自卸汽车能耗</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in Ctrl[item.type]['tableData']">
+                                <td>{{item.ID}}</td>
+                                <td>{{item.projectNum}}</td>
+                                <td>{{item.tuType}}</td>
+                                <td>{{item.waType}}</td>
+                                <td>{{item.tuiType}}</td>
+                                <td>{{item.xieType}}</td>
+                                <td>{{item.distance}}</td>
+
+                                <td>{{item.waE}}</td>
+                                <td>{{item.tuiE}}</td>
+                                <td>{{item.xieE}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="col-md-12" ng-show="projectType[6]!=undefined">
+<!--  -->
+                <h2>混凝土（碾压）m3</h2>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[6].amount" readonly="readonly"></input>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">土分类</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['tuType']" ng-change="typeChange(Ctrl[item.type]['tuType'], 'wa', item.type, item.num)" ng-options="item[0].tuType for item in Ctrl[item.type]['tuIndex']">
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">挖掘机型号(m³)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['waType']" ng-change="typeChange(Ctrl[item.type]['waType'], 'tui', item.type, item.num)" ng-options="item[0].waType for item in Ctrl[item.type]['waIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">推土机型号(kW)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['tuiType']" ng-change="typeChange(Ctrl[item.type]['tuiType'], 'xie', item.type, item.num)" ng-options="item[0].tuiType for item in Ctrl[item.type]['tuiIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">自卸汽车型号(t)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['xieType']" ng-change="typeChange(Ctrl[item.type]['xieType'], 'dis', item.type, item.num)" ng-options="item[0].xieType for item in Ctrl[item.type]['xieIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">运距(km)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['disType']" ng-change="typeChange(Ctrl[item.type]['disType'], 'last', item.type, item.num)" ng-options="item[0].distance for item in Ctrl[item.type]['disIndex']">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>工程量(m³)</th>
+                                <th>土石分类</th>
+                                <th>挖掘机(m³)</th>
+                                <th>推土机(kW)</th>
+                                <th>自卸汽车型号(t)</th>
+                                <th>自卸汽车运距(km)</th>
+                                <th>挖掘机能耗</th>
+                                <th>推土机能耗</th>
+                                <th>自卸汽车能耗</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in Ctrl[item.type]['tableData']">
+                                <td>{{item.ID}}</td>
+                                <td>{{item.projectNum}}</td>
+                                <td>{{item.tuType}}</td>
+                                <td>{{item.waType}}</td>
+                                <td>{{item.tuiType}}</td>
+                                <td>{{item.xieType}}</td>
+                                <td>{{item.distance}}</td>                    
+                                <td>{{item.waE}}</td>
+                                <td>{{item.tuiE}}</td>
+                                <td>{{item.xieE}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                </td>
+                            </tr>                    
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+                            
+
+            <div class="col-md-12" ng-show="projectType[7]!=undefined">
+<!--  -->
+                <h2>隧洞衬砌m3</h2>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[7].amount" readonly="readonly"></input>
+                    </div>                        
+                    
+                    <div class="input-group">
+                        <span class="input-group-addon">土分类</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['tuType']" ng-change="typeChange(Ctrl[item.type]['tuType'], 'wa', item.type, item.num)" ng-options="item[0].tuType for item in Ctrl[item.type]['tuIndex']">
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">挖掘机型号(m³)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['waType']" ng-change="typeChange(Ctrl[item.type]['waType'], 'tui', item.type, item.num)" ng-options="item[0].waType for item in Ctrl[item.type]['waIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">推土机型号(kW)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['tuiType']" ng-change="typeChange(Ctrl[item.type]['tuiType'], 'xie', item.type, item.num)" ng-options="item[0].tuiType for item in Ctrl[item.type]['tuiIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">自卸汽车型号(t)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['xieType']" ng-change="typeChange(Ctrl[item.type]['xieType'], 'dis', item.type, item.num)" ng-options="item[0].xieType for item in Ctrl[item.type]['xieIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">运距(km)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['disType']" ng-change="typeChange(Ctrl[item.type]['disType'], 'last', item.type, item.num)" ng-options="item[0].distance for item in Ctrl[item.type]['disIndex']">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>工程量(m³)</th>
+                                <th>土石分类</th>
+                                <th>挖掘机(m³)</th>
+                                <th>推土机(kW)</th>
+                                <th>自卸汽车型号(t)</th>
+                                <th>自卸汽车运距(km)</th>
+                                <th>挖掘机能耗</th>
+                                <th>推土机能耗</th>
+                                <th>自卸汽车能耗</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in Ctrl[item.type]['tableData']">
+                                <td>{{item.ID}}</td>
+                                <td>{{item.projectNum}}</td>
+                                <td>{{item.tuType}}</td>
+                                <td>{{item.waType}}</td>
+                                <td>{{item.tuiType}}</td>
+                                <td>{{item.xieType}}</td>
+                                <td>{{item.distance}}</td>
+
+                                <td>{{item.waE}}</td>
+                                <td>{{item.tuiE}}</td>
+                                <td>{{item.xieE}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+                                   
+                                    
+
+            <div class="col-md-12" ng-show="projectType[8]!=undefined">
+<!--  -->
+                <h2>明渠衬砌m3</h2>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[8].amount" readonly="readonly"></input>
+                    </div>                            
+                    
+                    <div class="input-group">
+                        <span class="input-group-addon">土分类</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['tuType']" ng-change="typeChange(Ctrl[item.type]['tuType'], 'wa', item.type, item.num)" ng-options="item[0].tuType for item in Ctrl[item.type]['tuIndex']">
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">挖掘机型号(m³)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['waType']" ng-change="typeChange(Ctrl[item.type]['waType'], 'tui', item.type, item.num)" ng-options="item[0].waType for item in Ctrl[item.type]['waIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">推土机型号(kW)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['tuiType']" ng-change="typeChange(Ctrl[item.type]['tuiType'], 'xie', item.type, item.num)" ng-options="item[0].tuiType for item in Ctrl[item.type]['tuiIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">自卸汽车型号(t)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['xieType']" ng-change="typeChange(Ctrl[item.type]['xieType'], 'dis', item.type, item.num)" ng-options="item[0].xieType for item in Ctrl[item.type]['xieIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">运距(km)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['disType']" ng-change="typeChange(Ctrl[item.type]['disType'], 'last', item.type, item.num)" ng-options="item[0].distance for item in Ctrl[item.type]['disIndex']">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>工程量(m³)</th>
+                                <th>土石分类</th>
+                                <th>挖掘机(m³)</th>
+                                <th>推土机(kW)</th>
+                                <th>自卸汽车型号(t)</th>
+                                <th>自卸汽车运距(km)</th>
+                                <th>挖掘机能耗</th>
+                                <th>推土机能耗</th>
+                                <th>自卸汽车能耗</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in Ctrl[item.type]['tableData']">
+                                <td>{{item.ID}}</td>
+                                <td>{{item.projectNum}}</td>
+                                <td>{{item.tuType}}</td>
+                                <td>{{item.waType}}</td>
+                                <td>{{item.tuiType}}</td>
+                                <td>{{item.xieType}}</td>
+                                <td>{{item.distance}}</td>
+
+                                <td>{{item.waE}}</td>
+                                <td>{{item.tuiE}}</td>
+                                <td>{{item.xieE}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        
+            <div class="col-md-12" ng-show="projectType[9]!=undefined">
+
+                <h2>回填灌浆</h2>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[9].amount" readonly="readonly"></input>
+                    </div>
+                 
+                    <div class="input-group">
+                        <span class="input-group-addon">设备1</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">设备2</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">设备3</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">设备4</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">设备5</span>
+                        <select class="form-control"></select>
+                    </div>
+                   
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>工程量(m³)</th>
+                                <th>土石分类</th>
+                                <th>挖掘机(m³)</th>
+                                <th>推土机(kW)</th>
+                                <th>自卸汽车型号(t)</th>
+                                <th>自卸汽车运距(km)</th>
+                                <th>挖掘机能耗</th>
+                                <th>推土机能耗</th>
+                                <th>自卸汽车能耗</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in Ctrl[item.type]['tableData']">
+                                <td>{{item.ID}}</td>
+                                <td>{{item.projectNum}}</td>
+                                <td>{{item.tuType}}</td>
+                                <td>{{item.waType}}</td>
+                                <td>{{item.tuiType}}</td>
+                                <td>{{item.xieType}}</td>
+                                <td>{{item.distance}}</td>
+
+                                <td>{{item.waE}}</td>
+                                <td>{{item.tuiE}}</td>
+                                <td>{{item.xieE}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            
+            <div class="col-md-12" ng-show="projectType[10]!=undefined">
+
+                <h2>帷幕灌浆</h2>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[10].amount" readonly="readonly"></input>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">施工方法</span>
+                        <select class="form-control"></select>
+                    </div>                    
+
+                    <div class="input-group">
+                        <span class="input-group-addon">岩石级别</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">钻孔机</span>
+                        <select class="form-control"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">透水率</span>
+                        <select class="form-control"></select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">设备1</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">设备2</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">设备3</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">设备4</span>
+                        <select class="form-control"></select>
+                    </div>
+                    
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>工程量(m³)</th>
+                                <th>土石分类</th>
+                                <th>挖掘机(m³)</th>
+                                <th>推土机(kW)</th>
+                                <th>自卸汽车型号(t)</th>
+                                <th>自卸汽车运距(km)</th>
+                                <th>挖掘机能耗</th>
+                                <th>推土机能耗</th>
+                                <th>自卸汽车能耗</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in Ctrl[item.type]['tableData']">
+                                <td>{{item.ID}}</td>
+                                <td>{{item.projectNum}}</td>
+                                <td>{{item.tuType}}</td>
+                                <td>{{item.waType}}</td>
+                                <td>{{item.tuiType}}</td>
+                                <td>{{item.xieType}}</td>
+                                <td>{{item.distance}}</td>
+
+                                <td>{{item.waE}}</td>
+                                <td>{{item.tuiE}}</td>
+                                <td>{{item.xieE}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-12" ng-show="projectType[11]!=undefined">
+
+                <h2>固结灌浆</h2>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[11].amount" readonly="readonly"></input>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">岩石级别</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">钻孔机</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">设备1</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">设备2</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">设备3</span>
+                        <select class="form-control"></select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">设备4</span>
+                        <select class="form-control"></select>
+                    </div>
+                    
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>工程量(m³)</th>
+                                <th>土石分类</th>
+                                <th>挖掘机(m³)</th>
+                                <th>推土机(kW)</th>
+                                <th>自卸汽车型号(t)</th>
+                                <th>自卸汽车运距(km)</th>
+                                <th>挖掘机能耗</th>
+                                <th>推土机能耗</th>
+                                <th>自卸汽车能耗</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in Ctrl[item.type]['tableData']">
+                                <td>{{item.ID}}</td>
+                                <td>{{item.projectNum}}</td>
+                                <td>{{item.tuType}}</td>
+                                <td>{{item.waType}}</td>
+                                <td>{{item.tuiType}}</td>
+                                <td>{{item.xieType}}</td>
+                                <td>{{item.distance}}</td>
+
+                                <td>{{item.waE}}</td>
+                                <td>{{item.tuiE}}</td>
+                                <td>{{item.xieE}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+                                          
+
+
+            <div class="col-md-12" ng-show="projectType[12]!=undefined">
+
+                <h2>喷射灌浆防渗墙</h2>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[12].amount" readonly="readonly"></input>
+                    </div>
+
+                    
+                    <div class="input-group">
+                        <span class="input-group-addon">土分类</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['tuType']" ng-change="typeChange(Ctrl[item.type]['tuType'], 'wa', item.type, item.num)" ng-options="item[0].tuType for item in Ctrl[item.type]['tuIndex']">
+                        </select>
+                    </div>
+
+
+
+                    <div class="input-group">
+                        <span class="input-group-addon">挖掘机型号(m³)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['waType']" ng-change="typeChange(Ctrl[item.type]['waType'], 'tui', item.type, item.num)" ng-options="item[0].waType for item in Ctrl[item.type]['waIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">推土机型号(kW)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['tuiType']" ng-change="typeChange(Ctrl[item.type]['tuiType'], 'xie', item.type, item.num)" ng-options="item[0].tuiType for item in Ctrl[item.type]['tuiIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">自卸汽车型号(t)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['xieType']" ng-change="typeChange(Ctrl[item.type]['xieType'], 'dis', item.type, item.num)" ng-options="item[0].xieType for item in Ctrl[item.type]['xieIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">运距(km)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['disType']" ng-change="typeChange(Ctrl[item.type]['disType'], 'last', item.type, item.num)" ng-options="item[0].distance for item in Ctrl[item.type]['disIndex']">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>工程量(m³)</th>
+                                <th>土石分类</th>
+                                <th>挖掘机(m³)</th>
+                                <th>推土机(kW)</th>
+                                <th>自卸汽车型号(t)</th>
+                                <th>自卸汽车运距(km)</th>
+                                <th>挖掘机能耗</th>
+                                <th>推土机能耗</th>
+                                <th>自卸汽车能耗</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in Ctrl[item.type]['tableData']">
+                                <td>{{item.ID}}</td>
+                                <td>{{item.projectNum}}</td>
+                                <td>{{item.tuType}}</td>
+                                <td>{{item.waType}}</td>
+                                <td>{{item.tuiType}}</td>
+                                <td>{{item.xieType}}</td>
+                                <td>{{item.distance}}</td>
+
+                                <td>{{item.waE}}</td>
+                                <td>{{item.tuiE}}</td>
+                                <td>{{item.xieE}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-12" ng-show="projectType[13]!=undefined">
+
+                <h2>塑性混凝土防渗墙</h2>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[13].amount" readonly="readonly"></input>
+                    </div>                                                    
+                    
+                    <div class="input-group">
+                        <span class="input-group-addon">土分类</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['tuType']" ng-change="typeChange(Ctrl[item.type]['tuType'], 'wa', item.type, item.num)" ng-options="item[0].tuType for item in Ctrl[item.type]['tuIndex']">
+                        </select>
+                    </div>                                                
+
+
+                    <div class="input-group">
+                        <span class="input-group-addon">挖掘机型号(m³)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['waType']" ng-change="typeChange(Ctrl[item.type]['waType'], 'tui', item.type, item.num)" ng-options="item[0].waType for item in Ctrl[item.type]['waIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">推土机型号(kW)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['tuiType']" ng-change="typeChange(Ctrl[item.type]['tuiType'], 'xie', item.type, item.num)" ng-options="item[0].tuiType for item in Ctrl[item.type]['tuiIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">自卸汽车型号(t)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['xieType']" ng-change="typeChange(Ctrl[item.type]['xieType'], 'dis', item.type, item.num)" ng-options="item[0].xieType for item in Ctrl[item.type]['xieIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">运距(km)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['disType']" ng-change="typeChange(Ctrl[item.type]['disType'], 'last', item.type, item.num)" ng-options="item[0].distance for item in Ctrl[item.type]['disIndex']">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>工程量(m³)</th>
+                                <th>土石分类</th>
+                                <th>挖掘机(m³)</th>
+                                <th>推土机(kW)</th>
+                                <th>自卸汽车型号(t)</th>
+                                <th>自卸汽车运距(km)</th>
+                                <th>挖掘机能耗</th>
+                                <th>推土机能耗</th>
+                                <th>自卸汽车能耗</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in Ctrl[item.type]['tableData']">
+                                <td>{{item.ID}}</td>
+                                <td>{{item.projectNum}}</td>
+                                <td>{{item.tuType}}</td>
+                                <td>{{item.waType}}</td>
+                                <td>{{item.tuiType}}</td>
+                                <td>{{item.xieType}}</td>
+                                <td>{{item.distance}}</td>
+
+                                <td>{{item.waE}}</td>
+                                <td>{{item.tuiE}}</td>
+                                <td>{{item.xieE}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+                
+            <div class="col-md-12" ng-show="projectType[14]!=undefined">
+
+                <h2>平洞衬砌m3</h2>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-addon">工程量(m³)</span>
+                        <input class="form-control" ng-model="projectType[14].amount" readonly="readonly"></input>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">土分类</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['tuType']" ng-change="typeChange(Ctrl[item.type]['tuType'], 'wa', item.type, item.num)" ng-options="item[0].tuType for item in Ctrl[item.type]['tuIndex']">
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">挖掘机型号(m³)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['waType']" ng-change="typeChange(Ctrl[item.type]['waType'], 'tui', item.type, item.num)" ng-options="item[0].waType for item in Ctrl[item.type]['waIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">推土机型号(kW)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['tuiType']" ng-change="typeChange(Ctrl[item.type]['tuiType'], 'xie', item.type, item.num)" ng-options="item[0].tuiType for item in Ctrl[item.type]['tuiIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">自卸汽车型号(t)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['xieType']" ng-change="typeChange(Ctrl[item.type]['xieType'], 'dis', item.type, item.num)" ng-options="item[0].xieType for item in Ctrl[item.type]['xieIndex']">
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">运距(km)</span>
+                        <select class="form-control" ng-model="Ctrl[item.type]['disType']" ng-change="typeChange(Ctrl[item.type]['disType'], 'last', item.type, item.num)" ng-options="item[0].distance for item in Ctrl[item.type]['disIndex']">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <table class="table table-bordered" align="center">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>工程量(m³)</th>
+                                <th>土石分类</th>
+                                <th>挖掘机(m³)</th>
+                                <th>推土机(kW)</th>
+                                <th>自卸汽车型号(t)</th>
+                                <th>自卸汽车运距(km)</th>
+                                <th>挖掘机能耗</th>
+                                <th>推土机能耗</th>
+                                <th>自卸汽车能耗</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in Ctrl[item.type]['tableData']">
+                                <td>{{item.ID}}</td>
+                                <td>{{item.projectNum}}</td>
+                                <td>{{item.tuType}}</td>
+                                <td>{{item.waType}}</td>
+                                <td>{{item.tuiType}}</td>
+                                <td>{{item.xieType}}</td>
+                                <td>{{item.distance}}</td>
+
+                                <td>{{item.waE}}</td>
+                                <td>{{item.tuiE}}</td>
+                                <td>{{item.xieE}}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                    <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-12">
+            <table class="table table-bordered" align="center" ng-show="tableData.length">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>工程量(m³)</th>
+                        <th>土石分类</th>
+                        <th>挖掘机(m³)</th>
+                        <th>推土机(kW)</th>
+                        <th>自卸汽车型号(t)</th>
+                        <th>自卸汽车运距(km)</th>
+                        <th>挖掘机能耗</th>
+                        <th>推土机能耗</th>
+                        <th>自卸汽车能耗</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in tableData">
+                        <td>{{item.ID}}</td>
+                        <td>{{item.projectNum}}</td>
+                        <td>{{item.tuType}}</td>
+                        <td>{{item.waType}}</td>
+                        <td>{{item.tuiType}}</td>
+                        <td>{{item.xieType}}</td>
+                        <td>{{item.distance}}</td>
+
+                        <td>{{item.waE}}</td>
+                        <td>{{item.tuiE}}</td>
+                        <td>{{item.xieE}}</td>
+                        <td><button class="btn btn-sm btn-danger" ng-click="remove(item)">删除</button></td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-4">
+                土方
+                <div id="echartcontainertu" style="width:300px;height: 300px"></div>
+            </div>
+            <div class="col-md-4">
+                石方
+                <div id="echartcontainershi" style="width:300px;height: 300px"></div>
+            </div>
+            <div class="col-md-4">
+                洞挖
+                <div id="echartcontainerdong" style="width:300px;height: 300px"></div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div id="containerbar" style="height: 600px"></div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="../js/myapp.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+
+
+<script src="../js/jixienenghao2.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>定额-土方施工机械-水电-挖装运</title>
+
+    <!-- Bootstrap -->
+    <link href="../../layuiadmin/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="../../layuiadmin/js/myapp.js"></script>
+    <script src="../../layuiadmin/layui/layui.js"></script>
+    <script src="../../layuiadmin/js/angular.min.js"></script>
+
+    <style>
+        td,th
+        {
+            vertical-align: middle !important;
+            text-align:center;
+        }
+    </style>
+
+</head>
+<body ng-app="app" style="height: 100%; margin: 0">
+<div class="container-fluid" ng-controller="MainCtrl as Ctrl">
+    <div class="row" >
+        <div class="col-md-12">
+        <!--<p>{{layerConfigs}}</p>-->
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h2>{{projectName[0].projectName}}</h2>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-addon">工程项目</span>
+                            <select class="form-control" ng-model="projectName"
+                                    ng-change="projectNameChange(projectName, 'projectParts', 'projectPart')"
+                                    ng-options="item[0].projectName for item in projectNames"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-addon">单位工程</span>
+                            <select class="form-control" ng-model="projectPart"
+                                    ng-change="projectChange(projectPart)"
+                                    ng-options="item[0].projectPart for item in projectParts">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-primary" ng-click="saveFinalResult(projectName, projectPart)">
+                            保存当前计算
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-primary" ng-click="removeFinalResult()">
+                            删除历史数据
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!--去重-->
+            <!--https://blog.csdn.net/mpfly/article/details/77837822-->
+            <!--<select v-model="option" >-->
+                <!--<option value="">&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;请选择&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>-->
+                <!--<option v-repeat="item in deals" v-hide="deals[$index].accNum == deals[$index+1].accNum">{{item.accNum}}</option>-->
+            <!--</select>-->
+
+
+            <!--projectType[$index]-->
+            <div ng-repeat="project in projectType">
+                <div ng-show="abledType.indexOf(project.type)>-1">
+                    <!--<h1>{{project}}</h1>-->
+                    <div ng-init="layerConfig = getlayerConfig(project.type);divshowable=true;">
+                        <!--<h2>{{layerConfig}}</h2>-->
+
+                        <button type="button" class="btn btn-primary" ng-click="divshowable=!divshowable;">
+                            {{layerConfig.name}}
+                        </button>
+
+                        <div class="panel panel-default collapse in" ng-show="divshowable">
+                            <div class="panel-body">
+
+                                <div class="col-md-12">
+
+                                    <div class="col-md-6 input-group">
+                                        <span class="input-group-addon">{{layerConfig.projectAmount}}</span>
+                                        <input class="form-control" readonly="readonly" ng-model="project.amount"></input>
+                                    </div>
+
+                                    <div class="col-md-6 input-group"></div>
+
+
+                                    <!--<h2 class="page-header">{{projectType[1].projectType}}(土方开挖)</h2>-->
+                                    <div class="col-md-12" ng-repeat="layers in layerConfig.layers"
+                                         ng-init="getTableByUrl(layers.url, this, layers.layers[0].index);">
+                                        <h2>{{layers.name}}</h2>
+                                        <div class="col-md-3">
+                                            <div class="input-group" ng-repeat="layer in layers.layers">
+                                                <!--<p>{{layer}}</p>-->
+                                                <!--<p>{{layers.url}}</p>-->
+                                                <!--<p>{{tableValues}}</p>-->
+                                                <!--<p>{{test2}}</p>-->
+                                                <!--<input type="text" ng-model="test2">-->
+                                                <!--<div ng-repeat="item in tableValues">-->
+                                                <!--<p>{{item}}</p>-->
+                                                <!--</div>-->
+                                                <!--<p>{{layer.index}}</p>-->
+                                                <!--<p>{{this['s'+$index]}}</p>-->
+
+                                                <!--<p>{{finalselect}}</p>-->
+                                                <span class="input-group-addon">{{layer.name}}</span>
+
+                                                <select class="form-control" ng-model="selected"
+                                                        ng-change="tableValues=filterBySelect(this, selected, layer.index, $parent, $index, project, layerConfig, project.type);"
+                                                        ng-options="item for item in this['s'+$index]"></select>
+                                                        <!--ng-change="projectNameChange(no1tutype, 'no1equip1s', 'equip1')"-->
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-9">
+                                            <!--<p>{{$parent.finalselect}}</p>-->
+                                            <!--<p>{{layers.table}}</p>-->
+                                            <table class="table table-bordered" align="center">
+                                                <thead>
+                                                <tr>
+                                                    <th ng-repeat="th in layers.table">{{th[0]}}</th>
+                                                    <th ng-show="this['OResult'+$index]!=0">总耗油(kg)</th>
+                                                    <th ng-show="this['EResult'+$index]!=0">总耗电(kw.h)</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <!--<p>{{$index}}</p>-->
+                                                    <td ng-repeat="td in layers.table">{{$parent["finalselect"+$parent.$index][td[1]]}}</td>
+
+                                                    <td ng-show="this['OResult'+$index]!=0">{{this['OResult'+$index] | number : 0}}</td>
+                                                    <td ng-show="this['EResult'+$index]!=0">{{this['EResult'+$index] | number : 0}}</td>
+
+                                                    <td>
+                                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="panel-footer"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+
+            <!--15-->
+
+            <!--12-->
+            <!--13-->
+            <!--20-->
+            <!--18-->
+
+            <!--17-->
+            <div>
+
+
+                <div ng-repeat="config in no17configs.layers">
+                    <div class="input-group">
+                        <span class="input-group-addon">{{config.name}}</span>
+                        <select class="form-control" ng-model="no7equip1"
+                                ng-change="projectNameChange(no7equip1, 'no7equip1Types', 'equip1Type')"
+                                ng-options="item[0].equip1 for item in no7equip1s"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+</div>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="../../layuiadmin/js/jquery-1.11.0.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="../../layuiadmin/js/myapp.js"></script>
+<script src="../../layuiadmin/js/bootstrap.min.js"></script>
+
+<script src="../../layuiadmin/js/layerConfigs.js"></script>
+<script src="../../layuiadmin/js/jixienenghaochonggou.js"></script>
+
+</body>
+</html>

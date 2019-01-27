@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>定额-土方施工机械-水电-挖装运</title>
+
+    <!-- Bootstrap -->
+    <link href="../../layuiadmin/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <script src="../../layuiadmin/layui/layui.js"></script>
+    <script src="../../layuiadmin/js/angular.min.js"></script>
+
+    <style>
+        td,th
+        {
+            vertical-align: middle !important;
+            text-align:center;
+        }
+    </style>
+
+</head>
+<body ng-app="app" style="height: 100%; margin: 0">
+<div class="container-fluid" ng-controller="MainCtrl as Ctrl">
+    <div class="row" >
+        <!--{{calcResult}}-->
+        <div class="col-md-12">
+
+            <div ng-repeat="(key, value) in calcResult">
+                <p>{{key}}</p>
+                <p>{{value}}</p>
+            </div>
+
+            <table class="table table-bordered" align="center">
+                <thead>
+                    <tr>
+                        <!--<th>ID</th>-->
+                        <th rowspan="2">耗能设施（设备和项目）</th>
+                        <th colspan="2">能耗</th>
+                        <th rowspan="2">折合标准煤（t）</th>
+                        <th rowspan="2">比例（％）</th>
+                    </tr>
+
+                    <tr>
+                        <!--<th>ID</th>-->
+                        <th>种类</th>
+                        <th>数量</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                <div ng-repeat="(key, value) in calcResult">
+                    <tr>
+                        <td rowspan="2">{{value.name}}</td>
+
+                        <td>柴油（kg）</td>
+                        <td>1209394</td>
+                        <td rowspan="2">2845.06</td>
+                        <td rowspan="2">17.83%</td>
+                    </tr>
+                    <tr>
+                        <td>电（kW·h）</td>
+                        <td>2680332</td>
+                    </tr>
+                </div>
+
+
+                    <tr>
+                        <td rowspan="2">砼施工设备</td>
+
+                        <td>柴油（kg）</td>
+                        <td>684587</td>
+                        <td rowspan="2">1402.11</td>
+                        <td rowspan="2">8.78%</td>
+                    </tr>
+                    <tr>
+                        <td>电（kW·h）</td>
+                        <td>1001492</td>
+                    </tr>
+
+
+
+                    <tr>
+                        <td>砂石、混凝土加工系统</td>
+
+                        <td>电（kW·h）</td>
+                        <td>7132633</td>
+                        <td>2881.58</td>
+                        <td>18.05%</td>
+                    </tr>
+
+                    <tr>
+                        <td>综合加工企业</td>
+
+                        <td>电（kW·h）</td>
+                        <td>4250000</td>
+                        <td>1717.00</td>
+                        <td>10.76%</td>
+                    </tr>
+
+                    <tr>
+                        <td>生产供水</td>
+
+                        <td>电（kW·h）</td>
+                        <td>4968000</td>
+                        <td>2007.07</td>
+                        <td>12.58%</td>
+                    </tr>
+
+                    <tr>
+                        <td>施工交通(对外交通)</td>
+
+                        <td>柴油（kg）</td>
+                        <td>3363465</td>
+                        <td>4900.90</td>
+                        <td>30.71%</td>
+                    </tr>
+
+                    <tr>
+                        <td>生产性建筑</td>
+
+                        <td>电（kW·h）</td>
+                        <td>250819</td>
+                        <td>101.33</td>
+                        <td>0.63%</td>
+                    </tr>
+
+                    <tr>
+                        <td>生活性建筑</td>
+
+                        <td>电（kW·h）</td>
+                        <td>261360</td>
+                        <td>105.59</td>
+                        <td>0.66%</td>
+                    </tr>
+
+                    <tr>
+                        <td>合计</td>
+
+                        <td></td>
+                        <td></td>
+                        <td>15960.66</td>
+                        <td>100%</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+
+        </div>
+
+
+
+
+    </div>
+</div>
+
+
+
+<script src="../../layuiadmin/js/jquery-1.11.0.min.js"></script>
+
+<script src="../../layuiadmin/js/bootstrap.min.js"></script>
+
+<script>
+    var app = angular.module("app", []);
+
+    app.controller("MainCtrl", ['$scope', '$http', function ($scope, $http) {
+
+        $scope.calcResult = layui.data("angularResult")['finalResult']["result"];
+
+
+    }]);
+</script>
+
+
+</body>
+</html>

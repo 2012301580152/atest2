@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>定额-土方施工机械-水电-挖装运</title>
+
+    <!-- Bootstrap -->
+    <link href="../../layuiadmin/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="../../layuiadmin/js/myapp.js"></script>
+    <script src="../../layuiadmin/layui/layui.js"></script>
+    <script src="../../layuiadmin/js/angular.min.js"></script>
+
+    <style>
+        td,th
+        {
+            vertical-align: middle !important;
+            text-align:center;
+        }
+    </style>
+
+</head>
+<body ng-app="app" style="height: 100%; margin: 0">
+
+<div class="container-fluid" ng-controller="MainCtrl as Ctrl">
+    <div class="row" >
+        <div>{{calcResult}}</div>
+        <h2 class="page-header">统计</h2>
+
+
+
+        <div class="col-md-12">
+            <div class="col-md-4">
+                <div id="echartcontainertu" style="width:300px;height: 300px"></div>
+            </div>
+        </div>
+
+
+        <div class="col-md-12">
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+        </div>
+
+
+
+        <div class="col-md-12">
+            <div id="containerbar" style="height: 600px"></div>
+        </div>
+        <div class="col-md-12">
+        </div>
+    </div>
+</div>
+
+
+
+<script src="../../layuiadmin/js/echarts.js"></script>
+<script src="../../layuiadmin/js/tongji.js"></script>
+
+<script>
+
+</script>
+
+</body>
+</html>

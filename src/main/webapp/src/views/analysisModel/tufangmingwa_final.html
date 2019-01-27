@@ -1,0 +1,1820 @@
+
+<title>定额-土方施工机械-水电-挖装运</title>
+
+
+
+<div class="container-fluid" ng-app="app" ng-controller="MainCtrl as Ctrl">
+
+    <style>
+        td,th
+        {
+            vertical-align: middle !important;
+            text-align:center;
+        }
+    </style>
+
+    <div class="row" >
+        <div class="col-md-12">
+
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h2>{{projectName[0].projectName}}</h2>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-addon">工程</span>
+                            <select class="form-control" ng-model="projectName"
+                                    ng-change="projectNameChange(projectName, 'projectParts', 'projectPart')"
+                                    ng-options="item[0].projectName for item in projectNames"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-addon">工程部位</span>
+                            <select class="form-control" ng-model="projectPart"
+                                    ng-change="projectChange(projectPart)"
+                                    ng-options="item[0].projectPart for item in projectParts">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div class="panel panel-default" ng-show="projectType[1]!=undefined">
+                <div class="panel-body">
+
+                    <div class="col-md-12">
+
+                        <h2 class="page-header">{{projectType[1].projectType}}(土方开挖)</h2>
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-addon">工程量(m³)</span>
+                                <input class="form-control" ng-model="projectType[1].amount"
+                                       readonly="readonly"></input>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">土分类</span>
+                                <select class="form-control" ng-model="no1tutype"
+                                        ng-change="projectNameChange(no1tutype, 'no1equip1s', 'equip1')"
+                                        ng-options="item[0].tuType for item in no1tutypes"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备1</span>
+                                <select class="form-control" ng-model="no1equip1"
+                                        ng-change="projectNameChange(no1equip1, 'no1equip1Types', 'equip1Type')"
+                                        ng-options="item[0].equip1 for item in no1equip1s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no1equip1Type"
+                                        ng-change="equipChange(no1equip1Type, 'no1equip2s', 1, no1equip1[0].equip1,
+                                no1equip1Type[0].equip1Type, 1)"
+                                        ng-options="item[0].equip1Type for item in no1equip1Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备2</span>
+                                <select class="form-control" ng-model="no1equip2"
+                                        ng-change="projectNameChange(no1equip2, 'no1equip2Types', 'equip2Type')"
+                                        ng-options="item[0].equip2 for item in no1equip2s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no1equip2Type"
+                                        ng-change="equipChange(no1equip2Type, 'no1equip3s', 2, no1equip2[0].equip2,
+                                no1equip2Type[0].equip2Type, 1)"
+                                        ng-options="item[0].equip2Type for item in no1equip2Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">自卸汽车</span>
+                                <select class="form-control" ng-model="no1equip3"
+                                        ng-change="projectNameChange(no1equip3, 'no1equip3Types', 'equip3Type')"
+                                        ng-options="item[0].equip3 for item in no1equip3s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no1equip3Type"
+                                        ng-change="equipChange(no1equip2Type, undefined, 3,  no1equip3[0].equip3,
+                                no1equip3Type[0].equip3Type, 1,3)"
+                                        ng-options="item[0].equip3Type for item in no1equip3Types"></select>
+                            </div>
+
+                        </div>
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>土分类</th>
+                                    <th>设备1</th>
+                                    <th>型号</th>
+                                    <th ng-show="no1equip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no1equip1UnitE!=0">台时耗电</th>
+
+                                    <th>设备2</th>
+                                    <th>型号</th>
+                                    <th ng-show="no1equip2UnitO!=0">台时耗油</th>
+                                    <th ng-show="no1equip2UnitE!=0">台时耗电</th>
+
+                                    <th>自卸汽车</th>
+                                    <th>型号</th>
+                                    <th ng-show="no1equip3UnitO!=0">台时耗油</th>
+                                    <th ng-show="no1equip3UnitE!=0">台时耗电</th>
+
+
+                                    <th ng-show="no1UnitO!=0">总耗油</th>
+                                    <th ng-show="no1UnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[1].amount}}</td>
+                                    <td>{{no1tutype[0].tuType}}</td>
+                                    <td>{{no1equip1[0].equip1}}</td>
+                                    <td>{{no1equip1Type[0].equip1Type}}</td>
+                                    <td ng-show="no1equip1UnitO!=0">{{no1equip1UnitO}}</td>
+                                    <td ng-show="no1equip1UnitE!=0">{{no1equip1UnitE}}</td>
+
+                                    <td>{{no1equip2[0].equip2}}</td>
+                                    <td>{{no1equip2Type[0].equip2Type}}</td>
+                                    <td ng-show="no1equip2UnitO!=0">{{no1equip1UnitO}}</td>
+                                    <td ng-show="no1equip2UnitE!=0">{{no1equip1UnitE}}</td>
+                                    <td>{{no1equip3[0].equip3}}</td>
+                                    <td>{{no1equip3Type[0].equip3Type}}</td>
+                                    <td ng-show="no1equip3UnitO!=0">{{no1equip1UnitO}}</td>
+                                    <td ng-show="no1equip3UnitE!=0">{{no1equip1UnitE}}</td>
+
+                                    <td ng-show="no1UnitO!=0">{{no1UnitO}}</td>
+                                    <td ng-show="no1UnitE!=0">{{no1UnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+
+
+
+            <div class="panel panel-default" ng-show="projectType[2]!=undefined">
+                <div class="panel-body">
+                    <div class="col-md-12">
+
+                        <h2 class="page-header">{{projectType[2].projectType}}(石方明挖)</h2>
+                        <!--<h2>石方明挖m3</h2>-->
+                        <div class="col-md-3">
+                            <!--孔深m	岩石级别	设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	石渣运输比例-->
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">工程量(m³)</span>
+                                <input class="form-control" ng-model="projectType[2].amount" readonly="readonly"></input>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">岩石级别</span>
+                                <select class="form-control" ng-model="no2rocktype"
+                                        ng-change="projectNameChange(no2rocktype, 'no2kongshens', 'kongShen')"
+                                        ng-options="item[0].rockType for item in no2rocktypes"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">孔深</span>
+                                <select class="form-control" ng-model="no2kongshen"
+                                        ng-change="projectNameChange(no2kongshen, 'no2equip1s', 'equip1')"
+                                        ng-options="item[0].kongShen for item in no2kongshens"></select>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon">设备1</span>
+                                <select class="form-control" ng-model="no2equip1"
+                                        ng-change="projectNameChange(no2equip1, 'no2equip1Types', 'equip2Type')"
+                                        ng-options="item[0].equip1 for item in no2equip1s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no2equip1Type"
+                                        ng-change="equipChange(no2equip1Type, 'no2equip2s', 1, no2equip1[0].equip1,
+                                no2equip1Type[0].equip1Type, 2)"
+                                        ng-options="item[0].equip1Type for item in no2equip1Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备2</span>
+                                <select class="form-control" ng-model="no2equip2"
+                                        ng-change="projectNameChange(no2equip2, 'no2equip2Types', 'equip2Type')"
+                                        ng-options="item[0].equip2 for item in no2equip2s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no2equip2Type"
+                                        ng-change="equipChange(no2equip2Type, undefined, 2, no2equip2[0].equip2,
+                                no2equip2Type[0].equip2Type, 2, 2, '')"
+                                        ng-options="item[0].equip2Type for item in no2equip2Types"></select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>岩石级别</th>
+                                    <th>孔深</th>
+                                    <th>设备1</th>
+                                    <th>型号</th>
+                                    <th ng-show="no2equip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no2equip1UnitE!=0">台时耗电</th>
+
+                                    <th>设备2</th>
+                                    <th>型号</th>
+                                    <th ng-show="no2equip2UnitO!=0">台时耗油</th>
+                                    <th ng-show="no2equip2UnitE!=0">台时耗电</th>
+
+                                    <th>石渣率</th>
+
+
+                                    <th ng-show="no2UnitO!=0">总耗油</th>
+                                    <th ng-show="no2UnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[2].amount}}</td>
+                                    <td>{{no2.rockType}}</td>
+                                    <td>{{no2.kongShen}}</td>
+
+                                    <td>{{no2.equip1}}</td>
+                                    <td>{{no2.equip1Type}}</td>
+                                    <td ng-show="no2equip1UnitO!=0">{{no2equip1UnitO}}</td>
+                                    <td ng-show="no2equip1UnitE!=0">{{no2equip1UnitE}}</td>
+
+                                    <td>{{no2.equip2}}</td>
+                                    <td>{{no2.equip2Type}}</td>
+                                    <td ng-show="no2equip2UnitO!=0">{{no2equip2UnitO}}</td>
+                                    <td ng-show="no2equip2UnitE!=0">{{no2equip2UnitE}}</td>
+
+                                    <td>{{no2.shizhaRate}}</td>
+
+                                    <td ng-show="no2UnitO!=0">{{no2UnitO}}</td>
+                                    <td ng-show="no2UnitE!=0">{{no2UnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-12">
+
+                        <div class="col-md-3">
+
+                            <!--设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	设备3	设备3型号	运距	设备3台时	增加1km运距-->
+                            <h2>{{projectType[2].projectType}}(石方明挖装运)</h2>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备1</span>
+                                <select class="form-control" ng-model="no2zequip1"
+                                        ng-change="projectNameChange(no2zequip1, 'no2zequip1Types', 'equip1Type')"
+                                        ng-options="item[0].equip1 for item in no2zequip1s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no2zequip1Type"
+                                        ng-change="equipChange(no2zequip1Type, 'no2zequip2s', 1, no2zequip1[0].equip1,
+                                no2zequip1Type[0].equip1Type, 2, undefined, 'z')"
+                                        ng-options="item[0].equip1Type for item in no2zequip1Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备2</span>
+                                <select class="form-control" ng-model="no2zequip2"
+                                        ng-change="projectNameChange(no2zequip2, 'no2zequip2Types', 'equip2Type')"
+                                        ng-options="item[0].equip2 for item in no2zequip2s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no2zequip2Type"
+                                        ng-change="equipChange(no2zequip2Type, 'no2zequip3s', 2, no2zequip2[0].equip2,
+                                no2zequip2Type[0].equip2Type, 2, undefined, 'z')"
+                                        ng-options="item[0].equip2Type for item in no2zequip2Types"></select>
+                            </div>
+
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备3</span>
+                                <select class="form-control" ng-model="no2zequip3"
+                                        ng-change="projectNameChange(no2zequip3, 'no2zequip3Types', 'equip3Type')"
+                                        ng-options="item[0].equip3 for item in no2zequip3s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no2zequip3Type"
+                                        ng-change="equipChange(no2zequip3Type, undefined, 3,  no2zequip3[0].equip3,
+                                no2zequip3Type[0].equip3Type, 2,3, 'z')"
+                                        ng-options="item[0].equip3Type for item in no2zequip3Types"></select>
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>设备1</th>
+                                    <th>型号</th>
+                                    <th ng-show="no2zequip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no2zequip1UnitE!=0">台时耗电</th>
+
+                                    <th>设备2</th>
+                                    <th>型号</th>
+                                    <th ng-show="no2zequip2UnitO!=0">台时耗油</th>
+                                    <th ng-show="no2zequip2UnitE!=0">台时耗电</th>
+
+                                    <th>设备3</th>
+                                    <th>型号</th>
+                                    <th ng-show="no2zequip3UnitO!=0">台时耗油</th>
+                                    <th ng-show="no2zequip3UnitE!=0">台时耗电</th>
+
+
+                                    <th ng-show="no2zUnitO!=0">总耗油</th>
+                                    <th ng-show="no2zUnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[2].amount}}</td>
+                                    <td>{{no2z.equip1}}</td>
+                                    <td>{{no2z.equip1Type}}</td>
+                                    <td ng-show="no2zequip1UnitO!=0">{{no2zequip1UnitO}}</td>
+                                    <td ng-show="no2zequip1UnitE!=0">{{no2zequip1UnitE}}</td>
+
+                                    <td>{{no2z.equip2}}</td>
+                                    <td>{{no2z.equip2Type}}</td>
+                                    <td ng-show="no2zequip2UnitO!=0">{{no2zequip2UnitO}}</td>
+                                    <td ng-show="no2zequip2UnitE!=0">{{no2zequip2UnitE}}</td>
+                                    <td>{{no2z.equip3}}</td>
+                                    <td>{{no2z.equip3Type}}</td>
+                                    <td ng-show="no2zequip3UnitO!=0">{{no2zequip3UnitO}}</td>
+                                    <td ng-show="no2zequip3UnitE!=0">{{no2zequip3UnitE}}</td>
+
+                                    <td ng-show="no2zUnitO!=0">{{no2zUnitO}}</td>
+                                    <td ng-show="no2zUnitE!=0">{{no2zUnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer"></div>
+
+            </div>
+
+
+
+
+
+            <div class="panel panel-default" ng-show="projectType[3]!=undefined">
+                <div class="panel-body">
+                    <div class="col-md-12">
+
+                        <!--<h2>{{projectType[3].projectType}}</h2>-->
+                        <h2 class="page-header">{{projectType[3].projectType}}(石方洞挖)</h2>
+                        <div class="col-md-3">
+                            <!--孔深m	岩石级别	设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	石渣运输比例-->
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">工程量(m³)</span>
+                                <input class="form-control" ng-model="projectType[3].amount" readonly="readonly"></input>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">岩石级别</span>
+                                <select class="form-control" ng-model="no3rocktype"
+                                        ng-change="projectNameChange(no3rocktype, 'no3waareas', 'waArea')"
+                                        ng-options="item[0].rackType for item in no3rocktypes"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">开挖断面</span>
+                                <select class="form-control" ng-model="no3waarea"
+                                        ng-change="projectNameChange(no3waarea, 'no3equip1s', 'equip1')"
+                                        ng-options="item[0].waArea for item in no3waareas"></select>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon">设备1</span>
+                                <select class="form-control" ng-model="no3equip1"
+                                        ng-change="projectNameChange(no3equip1, 'no3equip1Types', 'equip1Type')"
+                                        ng-options="item[0].equip1 for item in no3equip1s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no3equip1Type"
+                                        ng-change="equipChange(no3equip1Type, 'no3equip2s', 1, no3equip1[0].equip1,
+                                no3equip1Type[0].equip1Type, 3)"
+                                        ng-options="item[0].equip1Type for item in no3equip1Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备2</span>
+                                <select class="form-control" ng-model="no3equip2"
+                                        ng-change="projectNameChange(no3equip2, 'no3equip2Types', 'equip2Type')"
+                                        ng-options="item[0].equip2 for item in no3equip2s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no3equip2Type"
+                                        ng-change="equipChange(no3equip2Type, 'no3equip3s', 2, no3equip2[0].equip2,
+                                no3equip2Type[0].equip2Type, 3)"
+                                        ng-options="item[0].equip2Type for item in no3equip2Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备3</span>
+                                <select class="form-control" ng-model="no3equip3"
+                                        ng-change="projectNameChange(no3equip3, 'no3equip3Types', 'equip3Type')"
+                                        ng-options="item[0].equip3 for item in no3equip3s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no3equip3Type"
+                                        ng-change="equipChange(no3equip3Type, undefined, 3, no3equip3[0].equip3,
+                                no3equip3Type[0].equip3Type, 3, 3)"
+                                        ng-options="item[0].equip3Type for item in no3equip3Types"></select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>岩石级别</th>
+                                    <th>开挖断面</th>
+                                    <th>设备1</th>
+                                    <th>型号</th>
+                                    <th ng-show="no3equip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no3equip1UnitE!=0">台时耗电</th>
+
+                                    <th>设备2</th>
+                                    <th>型号</th>
+                                    <th ng-show="no3equip2UnitO!=0">台时耗油</th>
+                                    <th ng-show="no3equip2UnitE!=0">台时耗电</th>
+
+                                    <th>设备3</th>
+                                    <th>型号</th>
+                                    <th ng-show="no3equip3UnitO!=0">台时耗油</th>
+                                    <th ng-show="no3equip3UnitE!=0">台时耗电</th>
+                                    <th>石渣率</th>
+
+
+                                    <th ng-show="no3UnitO!=0">总耗油</th>
+                                    <th ng-show="no3UnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[3].amount}}</td>
+                                    <td>{{no3.rackType}}</td>
+                                    <td>{{no3.waArea}}</td>
+                                    <td>{{no3.equip1}}</td>
+                                    <td>{{no3.equip1Type}}</td>
+                                    <td ng-show="no3equip1UnitO!=0">{{no3equip1UnitO}}</td>
+                                    <td ng-show="no3equip1UnitE!=0">{{no3equip1UnitE}}</td>
+
+                                    <td>{{no3.equip2}}</td>
+                                    <td>{{no3.equip2Type}}</td>
+                                    <td ng-show="no3equip2UnitO!=0">{{no3equip2UnitO}}</td>
+                                    <td ng-show="no3equip2UnitE!=0">{{no3equip2UnitE}}</td>
+                                    <td>{{no3.equip3}}</td>
+                                    <td>{{no3.equip3Type}}</td>
+                                    <td ng-show="no3equip3UnitO!=0">{{no3equip3UnitO}}</td>
+                                    <td ng-show="no3equip3UnitE!=0">{{no3equip3UnitE}}</td>
+                                    <td>{{no3.shizhaRate}}</td>
+
+                                    <td ng-show="no3UnitO!=0">{{no3UnitO}}</td>
+                                    <td ng-show="no3UnitE!=0">{{no3UnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-12">
+
+                        <div class="col-md-3">
+
+                            <!--设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	设备3	设备3型号	运距	设备3台时	增加1km运距-->
+                            <h2>{{projectType[3].projectType}}(石方洞挖装运)</h2>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备1</span>
+                                <select class="form-control" ng-model="no3zequip1"
+                                        ng-change="projectNameChange(no3zequip1, 'no3zequip1Types', 'equip1Type')"
+                                        ng-options="item[0].equip1 for item in no3zequip1s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no3zequip1Type"
+                                        ng-change="equipChange(no3zequip1Type, 'no3zequip2s', 1, no3zequip1[0].equip1,
+                                no3zequip1Type[0].equip1Type, 3, undefined, 'z')"
+                                        ng-options="item[0].equip1Type for item in no3zequip1Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备2</span>
+                                <select class="form-control" ng-model="no3zequip2"
+                                        ng-change="projectNameChange(no3zequip2, 'no3zequip2Types', 'equip2Type')"
+                                        ng-options="item[0].equip2 for item in no3zequip2s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no3zequip2Type"
+                                        ng-change="equipChange(no3zequip2Type, 'no3zequip3s', 2, no3zequip2[0].equip2,
+                                no3zequip2Type[0].equip2Type, 3, undefined, 'z')"
+                                        ng-options="item[0].equip2Type for item in no3zequip2Types"></select>
+                            </div>
+
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备3</span>
+                                <select class="form-control" ng-model="no3zequip3"
+                                        ng-change="projectNameChange(no3zequip3, 'no3zequip3Types', 'equip3Type')"
+                                        ng-options="item[0].equip3 for item in no3zequip3s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no3zequip3Type"
+                                        ng-change="equipChange(no3zequip3Type, undefined, 3,  no3zequip3[0].equip3,
+                                no3zequip3Type[0].equip3Type, 3,3, 'z')"
+                                        ng-options="item[0].equip3Type for item in no3zequip3Types"></select>
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>设备1</th>
+                                    <th>型号</th>
+                                    <th ng-show="no3zequip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no3zequip1UnitE!=0">台时耗电</th>
+
+                                    <th>设备2</th>
+                                    <th>型号</th>
+                                    <th ng-show="no3zequip2UnitO!=0">台时耗油</th>
+                                    <th ng-show="no3zequip2UnitE!=0">台时耗电</th>
+
+                                    <th>设备3</th>
+                                    <th>型号</th>
+                                    <th ng-show="no3zequip3UnitO!=0">台时耗油</th>
+                                    <th ng-show="no3zequip3UnitE!=0">台时耗电</th>
+                                    <th>运距</th>
+
+                                    <th ng-show="no3zUnitO!=0">总耗油</th>
+                                    <th ng-show="no3zUnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[3].amount}}</td>
+                                    <td>{{no3z.equip1}}</td>
+                                    <td>{{no3z.equip1Type}}</td>
+                                    <td ng-show="no3zequip1UnitO!=0">{{no3zequip1UnitO}}</td>
+                                    <td ng-show="no3zequip1UnitE!=0">{{no3zequip1UnitE}}</td>
+
+                                    <td>{{no3z.equip2}}</td>
+                                    <td>{{no3z.equip2Type}}</td>
+                                    <td ng-show="no3zequip2UnitO!=0">{{no3zequip1UnitO}}</td>
+                                    <td ng-show="no3zequip2UnitE!=0">{{no3zequip1UnitE}}</td>
+                                    <td>{{no3z.equip3}}</td>
+                                    <td>{{no3z.equip3Type}}</td>
+                                    <td ng-show="no3zequip3UnitO!=0">{{no3zequip1UnitO}}</td>
+                                    <td ng-show="no3zequip3UnitE!=0">{{no3zequip1UnitE}}</td>
+                                    <td>{{no3z.yunju}}</td>
+
+                                    <td ng-show="no3zUnitO!=0">{{no3zUnitO}}</td>
+                                    <td ng-show="no3zUnitE!=0">{{no3zUnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+
+
+
+
+
+            <div class="panel panel-default" ng-show="projectType[11]!=undefined">
+                <div class="panel-body">
+                    <div class="col-md-12">
+
+                        <!--<h2>{{projectType[11].projectType}}</h2>-->
+                        <h2 class="page-header">{{projectType[11].projectType}}(固结灌浆钻孔)</h2>
+                        <div class="col-md-3">
+                            <!--孔深m	岩石级别	设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	石渣运输比例-->
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">工程量(m³)</span>
+                                <input class="form-control" ng-model="projectType[11].amount" readonly="readonly"></input>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">岩石级别</span>
+                                <select class="form-control" ng-model="no11rocktype"
+                                        ng-change="projectNameChange(no11rocktype, 'no11fangfas', 'fangfa')"
+                                        ng-options="item[0].rockType for item in no11zrocktypes"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">施工方法</span>
+                                <select class="form-control" ng-model="no11fangfa"
+                                        ng-change="projectNameChange(no11fangfa, 'no11equip1s', 'equip1')"
+                                        ng-options="item[0].fangfa for item in no11fangfas"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备</span>
+                                <select class="form-control" ng-model="no11equip1"
+                                        ng-change="equipChange(no11equip1, undefined, 1, no11equip1[0].equip1,
+                                '', 11, 1)"
+                                        ng-options="item[0].equip1 for item in no11equip1s"></select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>岩石级别</th>
+                                    <th>施工方法</th>
+                                    <th>设备1</th>
+                                    <th ng-show="no11equip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no11equip1UnitE!=0">台时耗电</th>
+
+                                    <th ng-show="no11UnitO!=0">总耗油</th>
+                                    <th ng-show="no11UnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[11].amount}}</td>
+                                    <td>{{no11.rockType}}</td>
+                                    <td>{{no11.fangfa}}</td>
+                                    <td>{{no11.equip1}}</td>
+                                    <td ng-show="no11equip1UnitO!=0">{{no11equip1UnitO}}</td>
+                                    <td ng-show="no11equip1UnitE!=0">{{no11equip1UnitE}}</td>
+
+                                    <td ng-show="no11UnitO!=0">{{no11UnitO}}</td>
+                                    <td ng-show="no11UnitE!=0">{{no11UnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-12">
+
+                        <div class="col-md-3">
+
+                            <!--设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	设备3	设备3型号	运距	设备3台时	增加1km运距-->
+                            <h2>{{projectType[11].projectType}}(固结灌浆)</h2>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">透水率</span>
+                                <select class="form-control" ng-model="no11toushuilv"
+                                        ng-change="projectNameChange(no11toushuilv, 'no11types', 'type')"
+                                        ng-options="item[0].toushuilv for item in no11toushuilvs"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">类型</span>
+                                <select class="form-control" ng-model="no11type"
+                                        ng-change="projectNameChange(no11type, 'no11zequip1s', 'equip1')"
+                                        ng-options="item[0].type for item in no11types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备1</span>
+                                <select class="form-control" ng-model="no11zequip1"
+                                        ng-change="equipChange(no11zequip1, 'no11zequip2s', 1, no11zequip1[0].equip1,
+                                no11zequip1Type[0].equip1Type, 11, undefined, 'z')"
+                                        ng-options="item[0].equip1 for item in no11zequip1s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备2</span>
+                                <select class="form-control" ng-model="no11zequip2"
+                                        ng-change="equipChange(no11zequip2, 'no11zequip3s', 2, no11zequip2[0].equip2,
+                                no11zequip2Type[0].equip2Type, 11, undefined, 'z')"
+                                        ng-options="item[0].equip2 for item in no11zequip2s"></select>
+                            </div>
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备3</span>
+                                <select class="form-control" ng-model="no11zequip3"
+                                        ng-change="equipChange(no11zequip3, undefined, 3,  no11zequip3[0].equip3,
+                                no11zequip3Type[0].equip3Type, 11,3, 'z')"
+                                        ng-options="item[0].equip3 for item in no11zequip3s"></select>
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>透水率</th>
+                                    <th>类型</th>
+                                    <th>设备1</th>
+                                    <th ng-show="no11zequip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no11zequip1UnitE!=0">台时耗电</th>
+
+                                    <th>设备2</th>
+                                    <th ng-show="no11zequip2UnitO!=0">台时耗油</th>
+                                    <th ng-show="no11zequip2UnitE!=0">台时耗电</th>
+
+                                    <th>设备3</th>
+                                    <th ng-show="no11zequip3UnitO!=0">台时耗油</th>
+                                    <th ng-show="no11zequip3UnitE!=0">台时耗电</th>
+
+                                    <th ng-show="no11zUnitO!=0">总耗油</th>
+                                    <th ng-show="no11zUnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[11].amount}}</td>
+                                    <td>{{no11z.toushuilv}}</td>
+                                    <td>{{no11z.type}}</td>
+                                    <td>{{no11z.equip1}}</td>
+                                    <td ng-show="no11zequip1UnitO!=0">{{no11zequip1UnitO}}</td>
+                                    <td ng-show="no11zequip1UnitE!=0">{{no11zequip1UnitE}}</td>
+
+                                    <td>{{no11z.equip2}}</td>
+                                    <td ng-show="no11zequip2UnitO!=0">{{no11zequip2UnitO}}</td>
+                                    <td ng-show="no11zequip2UnitE!=0">{{no11zequip2UnitE}}</td>
+
+                                    <td>{{no11z.equip3}}</td>
+                                    <td ng-show="no11zequip3UnitO!=0">{{no11zequip3UnitO}}</td>
+                                    <td ng-show="no11zequip3UnitE!=0">{{no11zequip3UnitE}}</td>
+
+                                    <td ng-show="no11zUnitO!=0">{{no11zUnitO}}</td>
+                                    <td ng-show="no11zUnitE!=0">{{no11zUnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+
+
+
+            <div class="panel panel-default" ng-show="projectType[9]!=undefined">
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <h2 class="page-header">{{projectType[9].projectType}}(回填灌浆)</h2>
+
+                        <div class="col-md-3">
+                            <!--设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	设备3	设备3型号	运距	设备3台时	增加1km运距-->
+
+                            <div class="input-group">
+                                <span class="input-group-addon">类型</span>
+                                <select class="form-control" ng-model="no9type"
+                                        ng-change="projectNameChange(no9type, 'no9equip1s', 'equip1')"
+                                        ng-options="item[0].type for item in no9types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备1</span>
+                                <select class="form-control" ng-model="no9equip1"
+                                        ng-change="equipChange(no9equip1, 'no9equip2s', 1, no9equip1[0].equip1,
+                                undefined, 9)"
+                                        ng-options="item[0].equip1 for item in no9equip1s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备2</span>
+                                <select class="form-control" ng-model="no9equip2"
+                                        ng-change="equipChange(no9equip2, 'no9equip3s', 2, no9equip2[0].equip2,
+                                undefined, 9)"
+                                        ng-options="item[0].equip2 for item in no9equip2s"></select>
+                            </div>
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备3</span>
+                                <select class="form-control" ng-model="no9equip3"
+                                        ng-change="equipChange(no9equip3, 'no9equip4s', 3,  no9equip3[0].equip3,
+                                undefined, 9)"
+                                        ng-options="item[0].equip3 for item in no9equip3s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备4</span>
+                                <select class="form-control" ng-model="no9equip4"
+                                        ng-change="equipChange(no9equip4, 'no9equip5s', 4,  no9equip4[0].equip4,
+                                undefined, 9)"
+                                        ng-options="item[0].equip4 for item in no9equip4s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备5</span>
+                                <select class="form-control" ng-model="no9equip5"
+                                        ng-change="equipChange(no9equip5, undefined, 5,  no9equip5[0].equip5,
+                                undefined, 9,5)"
+                                        ng-options="item[0].equip5 for item in no9equip5s"></select>
+                            </div>
+
+
+                        </div>
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>类型</th>
+                                    <th>设备1</th>
+                                    <th ng-show="no9equip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no9equip1UnitE!=0">台时耗电</th>
+
+                                    <th>设备2</th>
+                                    <th ng-show="no9equip2UnitO!=0">台时耗油</th>
+                                    <th ng-show="no9equip2UnitE!=0">台时耗电</th>
+
+                                    <th>设备3</th>
+                                    <th ng-show="no9equip3UnitO!=0">台时耗油</th>
+                                    <th ng-show="no9equip3UnitE!=0">台时耗电</th>
+
+                                    <th>设备4</th>
+                                    <th ng-show="no9equip4UnitO!=0">台时耗油</th>
+                                    <th ng-show="no9equip4UnitE!=0">台时耗电</th>
+
+                                    <th>设备5</th>
+                                    <th ng-show="no9equip5UnitO!=0">台时耗油</th>
+                                    <th ng-show="no9equip5UnitE!=0">台时耗电</th>
+
+                                    <th ng-show="no9UnitO!=0">总耗油</th>
+                                    <th ng-show="no9UnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[9].amount}}</td>
+                                    <td>{{no9.type}}</td>
+                                    <td>{{no9.equip1}}</td>
+                                    <td ng-show="no9equip1UnitO!=0">{{no9equip1UnitO}}</td>
+                                    <td ng-show="no9equip1UnitE!=0">{{no9equip1UnitE}}</td>
+
+                                    <td>{{no9.equip2}}</td>
+                                    <td ng-show="no9equip2UnitO!=0">{{no9equip2UnitO}}</td>
+                                    <td ng-show="no9equip2UnitE!=0">{{no9equip2UnitE}}</td>
+
+                                    <td>{{no9.equip3}}</td>
+                                    <td ng-show="no9equip3UnitO!=0">{{no9equip3UnitO}}</td>
+                                    <td ng-show="no9equip3UnitE!=0">{{no9equip3UnitE}}</td>
+
+                                    <td>{{no9.equip4}}</td>
+                                    <td ng-show="no9equip4UnitO!=0">{{no9equip4UnitO}}</td>
+                                    <td ng-show="no9equip4UnitE!=0">{{no9equip4UnitE}}</td>
+
+                                    <td>{{no9.equip5}}</td>
+                                    <td ng-show="no9equip5UnitO!=0">{{no9equip5UnitO}}</td>
+                                    <td ng-show="no9equip5UnitE!=0">{{no9equip5UnitE}}</td>
+
+                                    <td ng-show="no9UnitO!=0">{{no9UnitO}}</td>
+                                    <td ng-show="no9UnitE!=0">{{no9UnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-footer"></div>
+            </div>
+
+
+            <div class="panel panel-default" ng-show="projectType[10]!=undefined">
+                <div class="panel-body">
+                    <div class="col-md-12">
+
+                        <!--<h2>{{projectType[3].projectType}}</h2>-->
+                        <h2  class="page-header">{{projectType[10].projectType}}(帷幕灌浆钻孔)</h2>
+                        <div class="col-md-3">
+                            <!--孔深m	岩石级别	设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	石渣运输比例-->
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">工程量(m³)</span>
+                                <input class="form-control" ng-model="projectType[10].amount" readonly="readonly"></input>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">岩石级别</span>
+                                <select class="form-control" ng-model="no10rocktype"
+                                        ng-change="projectNameChange(no10rocktype, 'no10fangfas', 'fangfa')"
+                                        ng-options="item[0].rockType for item in no10rocktypes"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">施工方法</span>
+                                <select class="form-control" ng-model="no10fangfa"
+                                        ng-change="projectNameChange(no10fangfa, 'no10equip1s', 'equip1')"
+                                        ng-options="item[0].fangfa for item in no10fangfas"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备</span>
+                                <select class="form-control" ng-model="no10equip1"
+                                        ng-change="equipChange(no10equip1, undefined, 1, no10equip1[0].equip1,
+                                '', 10, 1)"
+                                        ng-options="item[0].equip1 for item in no10equip1s"></select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>岩石级别</th>
+                                    <th>施工方法</th>
+                                    <th>设备</th>
+                                    <th ng-show="no10equip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no10equip1UnitE!=0">台时耗电</th>
+
+                                    <th ng-show="no10UnitO!=0">总耗油</th>
+                                    <th ng-show="no10UnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[10].amount}}</td>
+                                    <td>{{no10.rockType}}</td>
+                                    <td>{{no10.fangfa}}</td>
+                                    <td>{{no10.equip1}}</td>
+                                    <td ng-show="no10equip1UnitO!=0">{{no10equip1UnitO}}</td>
+                                    <td ng-show="no10equip1UnitE!=0">{{no10equip1UnitE}}</td>
+
+                                    <td ng-show="no10UnitO!=0">{{no10UnitO}}</td>
+                                    <td ng-show="no10UnitE!=0">{{no10UnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-12">
+
+                        <div class="col-md-3">
+
+                            <!--设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	设备3	设备3型号	运距	设备3台时	增加1km运距-->
+                            <h2>{{projectType[10].projectType}}(帷幕灌浆)</h2>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">透水率</span>
+                                <select class="form-control" ng-model="no10toushuilv"
+                                        ng-change="projectNameChange(no10toushuilv, 'no10guanjiangMethods', 'guanjiangMethod')"
+                                        ng-options="item[0].toushuilv for item in no10toushuilvs"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">灌浆方法</span>
+                                <select class="form-control" ng-model="no10guanjiangMethod"
+                                        ng-change="projectNameChange(no10guanjiangMethod, 'no10zequip1s', 'equip1')"
+                                        ng-options="item[0].guanjiangMethod for item in no10guanjiangMethods"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备1</span>
+                                <select class="form-control" ng-model="no10zequip1"
+                                        ng-change="equipChange(no10zequip1, 'no10zequip2s', 1, no10zequip1[0].equip1,
+                                undefined, 10, undefined, 'z')"
+                                        ng-options="item[0].equip1 for item in no10zequip1s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备2</span>
+                                <select class="form-control" ng-model="no10zequip2"
+                                        ng-change="equipChange(no10zequip2, 'no10zequip3s', 2, no10zequip2[0].equip2,
+                                undefined, 10, undefined, 'z')"
+                                        ng-options="item[0].equip2 for item in no10zequip2s"></select>
+                            </div>
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备3</span>
+                                <select class="form-control" ng-model="no10zequip3"
+                                        ng-change="equipChange(no10zequip3, 'no10zequip4s', 3,  no10zequip3[0].equip3,
+                                undefined, 10,undefined, 'z')"
+                                        ng-options="item[0].equip3 for item in no10zequip3s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备3</span>
+                                <select class="form-control" ng-model="no10zequip4"
+                                        ng-change="equipChange(no10zequip4, undefined, 4,  no10zequip4[0].equip4,
+                                undefined, 10,4, 'z')"
+                                        ng-options="item[0].equip4 for item in no10zequip4s"></select>
+                            </div>
+
+
+
+                        </div>
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>透水率</th>
+                                    <th>灌浆方法</th>
+                                    <th>设备1</th>
+                                    <th ng-show="no10zequip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no10zequip1UnitE!=0">台时耗电</th>
+
+                                    <th>设备2</th>
+                                    <th ng-show="no10zequip2UnitO!=0">台时耗油</th>
+                                    <th ng-show="no10zequip2UnitE!=0">台时耗电</th>
+
+                                    <th>设备3</th>
+                                    <th ng-show="no10zequip3UnitO!=0">台时耗油</th>
+                                    <th ng-show="no10zequip3UnitE!=0">台时耗电</th>
+
+                                    <th>设备4</th>
+                                    <th ng-show="no10zequip4UnitO!=0">台时耗油</th>
+                                    <th ng-show="no10zequip4UnitE!=0">台时耗电</th>
+
+                                    <th ng-show="no10zUnitO!=0">总耗油</th>
+                                    <th ng-show="no10zUnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[10].amount}}</td>
+                                    <td>{{no10z.toushuilv}}</td>
+                                    <td>{{no10z.guanjiangMethod}}</td>
+                                    <td>{{no10z.equip1}}</td>
+                                    <td ng-show="no10zequip1UnitO!=0">{{no10zequip1UnitO}}</td>
+                                    <td ng-show="no10zequip1UnitE!=0">{{no10zequip1UnitE}}</td>
+
+                                    <td>{{no10z.equip2}}</td>
+                                    <td ng-show="no10zequip2UnitO!=0">{{no10zequip2UnitO}}</td>
+                                    <td ng-show="no10zequip2UnitE!=0">{{no10zequip2UnitE}}</td>
+
+                                    <td>{{no10z.equip3}}</td>
+                                    <td ng-show="no10zequip3UnitO!=0">{{no10zequip3UnitO}}</td>
+                                    <td ng-show="no10zequip3UnitE!=0">{{no10zequip3UnitE}}</td>
+
+                                    <td>{{no10z.equip4}}</td>
+                                    <td ng-show="no10zequip4UnitO!=0">{{no10zequip4UnitO}}</td>
+                                    <td ng-show="no10zequip4UnitE!=0">{{no10zequip4UnitE}}</td>
+
+                                    <td ng-show="no10zUnitO!=0">{{no10zUnitO}}</td>
+                                    <td ng-show="no10zUnitE!=0">{{no10zUnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+
+            <div class="panel panel-default" ng-show="projectType[5]!=undefined">
+                <div class="panel-body">
+                    <div class="col-md-12">
+
+                        <!--<h2>{{projectType[3].projectType}}</h2>-->
+                        <h2 class="page-header">{{projectType[5].projectType}}(混凝土施工)</h2>
+                        <div class="col-md-3">
+                            <!--孔深m	岩石级别	设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	石渣运输比例-->
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">工程量(m³)</span>
+                                <input class="form-control" ng-model="projectType[5].amount" readonly="readonly"></input>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">厚度</span>
+                                <select class="form-control" ng-model="no5houdu"
+                                        ng-change="projectNameChange(no5houdu, 'no5fangfas', 'fangfa')"
+                                        ng-options="item[0].houdu for item in no5houdus"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">方法</span>
+                                <select class="form-control" ng-model="no5waarea"
+                                        ng-change="projectNameChange(no5waarea, 'no5equip1s', 'equip1')"
+                                        ng-options="item[0].fangfa for item in no5fangfas"></select>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon">设备1</span>
+                                <select class="form-control" ng-model="no5equip1"
+                                        ng-change="projectNameChange(no5equip1, 'no5equip1Types', 'equip1Type')"
+                                        ng-options="item[0].equip1 for item in no5equip1s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no5equip1Type"
+                                        ng-change="equipChange(no5equip1Type, 'no5equip2s', 1, no5equip1[0].equip1,
+                                no5equip1Type[0].equip1Type, 5)"
+                                        ng-options="item[0].equip1Type for item in no5equip1Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备2</span>
+                                <select class="form-control" ng-model="no5equip2"
+                                        ng-change="projectNameChange(no5equip2, 'no5equip2Types', 'equip2Type')"
+                                        ng-options="item[0].equip2 for item in no5equip2s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no5equip2Type"
+                                        ng-change="equipChange(no5equip2Type, 'no5equip3s', 2, no5equip2[0].equip2,
+                                no5equip2Type[0].equip2Type, 5)"
+                                        ng-options="item[0].equip2Type for item in no5equip2Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备3</span>
+                                <select class="form-control" ng-model="no5equip3"
+                                        ng-change="projectNameChange(no5equip3, 'no5equip3Types', 'equip3Type')"
+                                        ng-options="item[0].equip3 for item in no5equip3s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no5equip3Type"
+                                        ng-change="equipChange(no5equip3Type, 'no5equip4s', 3, no5equip3[0].equip3,
+                                no5equip3Type[0].equip3Type, 5)"
+                                        ng-options="item[0].equip3Type for item in no5equip3Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备4</span>
+                                <select class="form-control" ng-model="no5equip4"
+                                        ng-change="projectNameChange(no5equip4, 'no5equip4Types', 'equip4Type')"
+                                        ng-options="item[0].equip4 for item in no5equip4s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no5equip4Type"
+                                        ng-change="equipChange(no5equip4Type, undefined, 4, no5equip4[0].equip4,
+                                no5equip4Type[0].equip4Type, 5, 4)"
+                                        ng-options="item[0].equip4Type for item in no5equip4Types"></select>
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>厚度</th>
+                                    <th>方法</th>
+                                    <th>设备1</th>
+                                    <th>型号</th>
+                                    <th ng-show="no5equip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no5equip1UnitE!=0">台时耗电</th>
+
+                                    <th>设备2</th>
+                                    <th>型号</th>
+                                    <th ng-show="no5equip2UnitO!=0">台时耗油</th>
+                                    <th ng-show="no5equip2UnitE!=0">台时耗电</th>
+
+                                    <th>设备3</th>
+                                    <th>型号</th>
+                                    <th ng-show="no5equip3UnitO!=0">台时耗油</th>
+                                    <th ng-show="no5equip3UnitE!=0">台时耗电</th>
+
+                                    <th>设备4</th>
+                                    <th>型号</th>
+                                    <th ng-show="no5equip4UnitO!=0">台时耗油</th>
+                                    <th ng-show="no5equip4UnitE!=0">台时耗电</th>
+
+
+
+
+                                    <th ng-show="no5UnitO!=0">总耗油</th>
+                                    <th ng-show="no5UnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[5].amount}}</td>
+                                    <td>{{no5.houdu}}</td>
+                                    <td>{{no5.fangfa}}</td>
+
+                                    <td>{{no5.equip1}}</td>
+                                    <td>{{no5.equip1Type}}</td>
+                                    <td ng-show="no5equip1UnitO!=0">{{no5equip1UnitO}}</td>
+                                    <td ng-show="no5equip1UnitE!=0">{{no5equip1UnitE}}</td>
+
+                                    <td>{{no5.equip2}}</td>
+                                    <td>{{no5.equip2Type}}</td>
+                                    <td ng-show="no5equip2UnitO!=0">{{no5equip2UnitO}}</td>
+                                    <td ng-show="no5equip2UnitE!=0">{{no5equip2UnitE}}</td>
+
+                                    <td>{{no5.equip3}}</td>
+                                    <td>{{no5.equip3Type}}</td>
+                                    <td ng-show="no5equip3UnitO!=0">{{no5equip3UnitO}}</td>
+                                    <td ng-show="no5equip3UnitE!=0">{{no5equip3UnitE}}</td>
+
+                                    <td>{{no5.equip4}}</td>
+                                    <td>{{no5.equip4Type}}</td>
+                                    <td ng-show="no5equip4UnitO!=0">{{no5equip4UnitO}}</td>
+                                    <td ng-show="no5equip4UnitE!=0">{{no5equip4UnitE}}</td>
+
+
+
+                                    <td ng-show="no5UnitO!=0">{{no5UnitO}}</td>
+                                    <td ng-show="no5UnitE!=0">{{no5UnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-12" ng-show="projectType[5]!=undefined">
+
+                        <div class="col-md-3">
+
+                            <!--设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	设备3	设备3型号	运距	设备3台时	增加1km运距-->
+                            <h2>{{projectType[5].projectType}}(混凝土施工水平运输)</h2>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">高度</span>
+                                <select class="form-control" ng-model="no5czhigh"
+                                        ng-change="projectNameChange(no5czhigh, 'no5czequip1s', 'equip1')"
+                                        ng-options="item[0].high for item in no5czhighs"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备1</span>
+                                <select class="form-control" ng-model="no5czequip1"
+                                        ng-change="projectNameChange(no5czequip1, 'no5czequip1Types', 'equip1Type')"
+                                        ng-options="item[0].equip1 for item in no5czequip1s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no5czequip1Type"
+                                        ng-change="equipChange(no5czequip1Type, 'no5czequip2s', 1, no5czequip1[0].equip1,
+                                no5czequip1Type[0].equip1Type, 5, undefined, 'cz')"
+                                        ng-options="item[0].equip1Type for item in no5czequip1Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备2</span>
+                                <select class="form-control" ng-model="no5czequip2"
+                                        ng-change="projectNameChange(no5czequip2, 'no5czequip2Types', 'equip2Type')"
+                                        ng-options="item[0].equip2 for item in no5czequip2s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no5czequip2Type"
+                                        ng-change="equipChange(no5czequip2Type, undefined, 2, no5czequip2[0].equip2,
+                                no5czequip2Type[0].equip2Type, 5, 2, 'cz')"
+                                        ng-options="item[0].equip2Type for item in no5czequip2Types"></select>
+                            </div>
+
+                        </div>
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>高度</th>
+                                    <th>设备1</th>
+                                    <th>型号</th>
+                                    <th ng-show="no5czequip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no5czequip1UnitE!=0">台时耗电</th>
+
+                                    <th>设备2</th>
+                                    <th>型号</th>
+                                    <th ng-show="no5czequip2UnitO!=0">台时耗油</th>
+                                    <th ng-show="no5czequip2UnitE!=0">台时耗电</th>
+
+
+                                    <th ng-show="no3zUnitO!=0">总耗油</th>
+                                    <th ng-show="no3zUnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[5].amount}}</td>
+                                    <td>{{no5cz.high}}</td>
+                                    <td>{{no5cz.equip1}}</td>
+                                    <td>{{no5cz.equip1Type}}</td>
+                                    <td ng-show="no5czequip1UnitO!=0">{{no5czequip1UnitO}}</td>
+                                    <td ng-show="no5czequip1UnitE!=0">{{no5czequip1UnitE}}</td>
+
+                                    <td>{{no5cz.equip2}}</td>
+                                    <td>{{no5cz.equip2Type}}</td>
+                                    <td ng-show="no5czequip2UnitO!=0">{{no5czequip1UnitO}}</td>
+                                    <td ng-show="no5czequip2UnitE!=0">{{no5czequip1UnitE}}</td>
+
+
+                                    <td ng-show="no5czUnitO!=0">{{no5czUnitO}}</td>
+                                    <td ng-show="no5czUnitE!=0">{{no5czUnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+
+                        <div class="col-md-3">
+
+                            <!--设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	设备3	设备3型号	运距	设备3台时	增加1km运距-->
+                            <h2>{{projectType[5].projectType}}(混凝土施工水平运输)</h2>
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">运距</span>
+                                <select class="form-control" ng-model="no5spyunju"
+                                        ng-change="projectNameChange(no5spyunju, 'no5spneiwais', 'neiwai')"
+                                        ng-options="item[0].yunju for item in no5spyunjus"></select>
+                            </div>
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">洞内/外</span>
+                                <select class="form-control" ng-model="no5spneiwai"
+                                        ng-change="projectNameChange(no5spneiwai, 'no5spequip1s', 'equip1')"
+                                        ng-options="item[0].neiwai for item in no5spneiwais"></select>
+                            </div>
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备1</span>
+                                <select class="form-control" ng-model="no5spequip1"
+                                        ng-change="projectNameChange(no5spequip1, 'no5spequip1Types', 'equip1Type')"
+                                        ng-options="item[0].equip1 for item in no5spequip1s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no5spequip1Type"
+                                        ng-change="equipChange(no5spequip1Type, undefined, 1, no5spequip1[0].equip1,
+                                no5spequip1Type[0].equip1Type, 5, 1, 'sp')"
+                                        ng-options="item[0].equip1Type for item in no5spequip1Types"></select>
+                            </div>
+
+                        </div>
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>运距</th>
+                                    <th>洞内/外</th>
+                                    <th>设备1</th>
+                                    <th>型号</th>
+                                    <th ng-show="no5spequip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no5spequip1UnitE!=0">台时耗电</th>
+
+
+                                    <th ng-show="no5spUnitO!=0">总耗油</th>
+                                    <th ng-show="no5spUnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[5].amount}}</td>
+                                    <td>{{no5sp.yunju}}</td>
+                                    <td>{{no5sp.neiwai}}</td>
+                                    <td>{{no5sp.equip1}}</td>
+                                    <td>{{no5sp.equip1Type}}</td>
+                                    <td ng-show="no5spequip1UnitO!=0">{{no5spequip1UnitO}}</td>
+                                    <td ng-show="no5spequip1UnitE!=0">{{no5spequip1UnitE}}</td>
+
+
+
+                                    <td ng-show="no5spUnitO!=0">{{no5spUnitO}}</td>
+                                    <td ng-show="no5spUnitE!=0">{{no5spUnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+
+
+
+            <div class="panel panel-default" ng-show="projectType[8]!=undefined">
+                <div class="panel-body">
+                    <div class="col-md-12">
+
+                        <!--<h2>{{projectType[3].projectType}}</h2>-->
+                        <h2 class="page-header">{{projectType[8].projectType}}(明渠衬砌)</h2>
+                        <div class="col-md-3">
+                            <!--孔深m	岩石级别	设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	石渣运输比例-->
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">工程量(m³)</span>
+                                <input class="form-control" ng-model="projectType[8].amount" readonly="readonly"></input>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">厚度</span>
+                                <select class="form-control" ng-model="no8houdu"
+                                        ng-change="projectNameChange(no8houdu, 'no8equip1s', 'equip1')"
+                                        ng-options="item[0].houdu for item in no8houdus"></select>
+                            </div>
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备1</span>
+                                <select class="form-control" ng-model="no8equip1"
+                                        ng-change="projectNameChange(no8equip1, 'no8equip1Types', 'equip1Type')"
+                                        ng-options="item[0].equip1 for item in no8equip1s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no8equip1Type"
+                                        ng-change="equipChange(no8equip1Type, 'no8equip2s', 1, no8equip1[0].equip1,
+                                no8equip1Type[0].equip1Type, 8)"
+                                        ng-options="item[0].equip1Type for item in no8equip1Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备2</span>
+                                <select class="form-control" ng-model="no8equip2"
+                                        ng-change="projectNameChange(no8equip2, 'no8equip2Types', 'equip2Type')"
+                                        ng-options="item[0].equip2 for item in no8equip2s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no8equip2Type"
+                                        ng-change="equipChange(no8equip2Type, undefined, 2, no8equip2[0].equip2,
+                                no8equip2Type[0].equip2Type, 8, 2)"
+                                        ng-options="item[0].equip2Type for item in no8equip2Types"></select>
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>厚度</th>
+                                    <th>设备1</th>
+                                    <th>型号</th>
+                                    <th ng-show="no8equip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no8equip1UnitE!=0">台时耗电</th>
+
+                                    <th>设备2</th>
+                                    <th>型号</th>
+                                    <th ng-show="no8equip2UnitO!=0">台时耗油</th>
+                                    <th ng-show="no8equip2UnitE!=0">台时耗电</th>
+
+                                    <th ng-show="no8UnitO!=0">总耗油</th>
+                                    <th ng-show="no8UnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[8].amount}}</td>
+
+                                    <td>{{no8.houdu}}</td>
+                                    <td>{{no8.equip1}}</td>
+                                    <td>{{no8.equip1Type}}</td>
+                                    <td ng-show="no8equip1UnitO!=0">{{no8equip1UnitO}}</td>
+                                    <td ng-show="no8equip1UnitE!=0">{{no8equip1UnitE}}</td>
+
+                                    <td>{{no8.equip2}}</td>
+                                    <td>{{no8.equip2Type}}</td>
+                                    <td ng-show="no8equip2UnitO!=0">{{no8equip2UnitO}}</td>
+                                    <td ng-show="no8equip2UnitE!=0">{{no8equip2UnitE}}</td>
+
+
+                                    <td ng-show="no8UnitO!=0">{{no8UnitO}}</td>
+                                    <td ng-show="no8UnitE!=0">{{no8UnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+
+
+            <div class="panel panel-default" ng-show="projectType[7]!=undefined">
+                <div class="panel-body">
+                    <div class="col-md-12">
+
+                        <!--<h2>{{projectType[3].projectType}}</h2>-->
+                        <h2 class="page-header">{{projectType[7].projectType}}(隧洞衬砌)</h2>
+                        <div class="col-md-3">
+                            <!--孔深m	岩石级别	设备1	设备1型号	设备1台时	设备2	设备2型号	设备2台时	石渣运输比例-->
+
+
+                            <div class="input-group">
+                                <span class="input-group-addon">工程量(m³)</span>
+                                <input class="form-control" ng-model="projectType[7].amount" readonly="readonly"></input>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">厚度</span>
+                                <select class="form-control" ng-model="no7houdu"
+                                        ng-change="projectNameChange(no7houdu, 'no7duanmians', 'duanmian')"
+                                        ng-options="item[0].houdu for item in no7houdus"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">断面</span>
+                                <select class="form-control" ng-model="no7duanmian"
+                                        ng-change="projectNameChange(no7duanmian, 'no7equip1s', 'equip1')"
+                                        ng-options="item[0].duanmian for item in no7duanmians"></select>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon">设备1</span>
+                                <select class="form-control" ng-model="no7equip1"
+                                        ng-change="projectNameChange(no7equip1, 'no7equip1Types', 'equip1Type')"
+                                        ng-options="item[0].equip1 for item in no7equip1s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no7equip1Type"
+                                        ng-change="equipChange(no7equip1Type, 'no7equip2s', 1, no7equip1[0].equip1,
+                                no7equip1Type[0].equip1Type, 7)"
+                                        ng-options="item[0].equip1Type for item in no7equip1Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备2</span>
+                                <select class="form-control" ng-model="no7equip2"
+                                        ng-change="projectNameChange(no7equip2, 'no7equip2Types', 'equip2Type')"
+                                        ng-options="item[0].equip2 for item in no7equip2s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no7equip2Type"
+                                        ng-change="equipChange(no7equip2Type, 'no7equip3s', 2, no7equip2[0].equip2,
+                                no7equip2Type[0].equip2Type, 7)"
+                                        ng-options="item[0].equip2Type for item in no7equip2Types"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">设备3</span>
+                                <select class="form-control" ng-model="no7equip3"
+                                        ng-change="projectNameChange(no7equip3, 'no7equip3Types', 'equip3Type')"
+                                        ng-options="item[0].equip3 for item in no7equip3s"></select>
+                            </div>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">型号</span>
+                                <select class="form-control" ng-model="no7equip3Type"
+                                        ng-change="equipChange(no7equip3Type, undefined, 3, no7equip3[0].equip3,
+                                no7equip3Type[0].equip3Type, 7, 3)"
+                                        ng-options="item[0].equip3Type for item in no7equip3Types"></select>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-9">
+                            <table class="table table-bordered" align="center">
+                                <thead>
+                                <tr>
+                                    <!--<th>ID</th>-->
+                                    <th>工程量(m³)</th>
+                                    <th>厚度</th>
+                                    <th>断面</th>
+                                    <th>设备1</th>
+                                    <th>型号</th>
+                                    <th ng-show="no7equip1UnitO!=0">台时耗油</th>
+                                    <th ng-show="no7equip1UnitE!=0">台时耗电</th>
+
+                                    <th>设备2</th>
+                                    <th>型号</th>
+                                    <th ng-show="no7equip2UnitO!=0">台时耗油</th>
+                                    <th ng-show="no7equip2UnitE!=0">台时耗电</th>
+
+                                    <th>设备3</th>
+                                    <th>型号</th>
+                                    <th ng-show="no7equip3UnitO!=0">台时耗油</th>
+                                    <th ng-show="no7equip3UnitE!=0">台时耗电</th>
+
+
+
+                                    <th ng-show="no7UnitO!=0">总耗油</th>
+                                    <th ng-show="no7UnitE!=0">总耗电</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{projectType[7].amount}}</td>
+                                    <td>{{no7.houdu}}</td>
+                                    <td>{{no7.duanmian}}</td>
+                                    <td>{{no7.equip1}}</td>
+                                    <td>{{no7.equip1Type}}</td>
+                                    <td ng-show="no7equip1UnitO!=0">{{no7equip1UnitO}}</td>
+                                    <td ng-show="no7equip1UnitE!=0">{{no7equip1UnitE}}</td>
+
+                                    <td>{{no7.equip2}}</td>
+                                    <td>{{no7.equip2Type}}</td>
+                                    <td ng-show="no7equip2UnitO!=0">{{no7equip2UnitO}}</td>
+                                    <td ng-show="no7equip2UnitE!=0">{{no7equip2UnitE}}</td>
+                                    <td>{{no7.equip3}}</td>
+                                    <td>{{no7.equip3Type}}</td>
+                                    <td ng-show="no7equip3UnitO!=0">{{no7equip3UnitO}}</td>
+                                    <td ng-show="no7equip3UnitE!=0">{{no7equip3UnitE}}</td>
+
+
+                                    <td ng-show="no7UnitO!=0">{{no7UnitO}}</td>
+                                    <td ng-show="no7UnitE!=0">{{no7UnitE}}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-xs" ng-click="save(item)">保存</button>
+                                        <button class="btn btn-danger btn-xs" ng-click="remove(item)">删除</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer"></div>
+            </div>
+        </div>
+
+
+        <h2 class="page-header">统计</h2>
+
+
+        <div class="col-md-12">
+            <div class="col-md-4">
+                土方
+                <div id="echartcontainertu" style="width:300px;height: 300px"></div>
+            </div>
+            <div class="col-md-4">
+                石方
+                <div id="echartcontainershi" style="width:300px;height: 300px"></div>
+            </div>
+            <div class="col-md-4">
+                洞挖
+                <div id="echartcontainerdong" style="width:300px;height: 300px"></div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div id="containerbar" style="height: 600px"></div>
+        </div>
+
+    </div>
+</div>
+

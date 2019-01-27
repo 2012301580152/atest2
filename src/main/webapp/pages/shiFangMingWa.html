@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>定额-土方施工机械-水电-挖装运</title>
+
+    <!-- Bootstrap -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="../js/myapp.js"></script>
+    <script src="../js/angular.min.js"></script>
+    <style>
+        td,th
+        {
+            vertical-align: middle !important;
+            text-align:center;
+        }
+    </style>
+</head>
+<body ng-app="app">
+<div class="container-fluid" ng-controller="MainCtrl">
+    <div class="row" >
+
+        <div class="col-md-6">
+            <h2>装运</h2>
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon">工程部位</span>
+                    <select class="form-control" ng-model="part" ng-change="projectChange(part)" ng-options="item.part for item in project.type">
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-addon">{{ part.type[0].name }}工程量(m³)</span>
+                    <input class="form-control" ng-model="part.type[0].num" readonly="readonly"></input>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="input-group">
+                    <span class="input-group-addon">土分类</span>
+                    <select class="form-control" ng-model="tuType" ng-change="typeChange(tuType, 'zhuang')" ng-options="item[0].tuType for item in tuIndex">
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">装载机型号(m³)</span>
+                    <select class="form-control" ng-model="zhuangType" ng-change="typeChange(zhuangType, 'tui')" ng-options="item[0].zhuangType for item in zhuangIndex">
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">推土机型号（kW）</span>
+                    <select class="form-control" ng-model="tuiType" ng-change="typeChange(tuiType, 'xie')" ng-options="item[0].tuiType for item in tuiIndex">
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">自卸汽车型号（t）</span>
+                    <select class="form-control" ng-model="xieType" ng-change="typeChange(xieType, 'dis')" ng-options="item[0].xieType for item in xieIndex">
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">运距（km）</span>
+                    <select class="form-control" ng-model="disType" ng-change="typeChange(disType, 'last')" ng-options="item[0].distance for item in disIndex">
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <table class="table table-bordered" align="center" ng-show="tableData.length">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>工程量(m³)</th>
+                        <th>土石分类</th>
+                        <th>装载机(m³)</th>
+                        <th>推土机(kW)</th>
+                        <th>自卸汽车型号(t)</th>
+                        <th>自卸汽车运距(km)</th>
+                        <th>装载机能耗</th>
+                        <th>推土机能耗</th>
+                        <th>自卸汽车能耗</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in tableData">
+                        <td>{{item.ID}}</td>
+                        <td>{{item.projectNum}}</td>
+                        <td>{{item.tuType}}</td>
+                        <td>{{item.zhuangType}}</td>
+                        <td>{{item.tuiType}}</td>
+                        <td>{{item.xieType}}</td>
+                        <td>{{item.distance}}</td>
+
+                        <td>{{item.zhuangE}}</td>
+                        <td>{{item.tuiE}}</td>
+                        <td>{{item.xieE}}</td>
+                        <td><button class="btn btn-sm btn-danger" ng-click="remove(item)">删除</button></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-12">
+            <div id="echartcontainer" style="height: 100%"></div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="../js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+       <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+       <script type="text/javascript">
+
+       </script>
+
+
+<script>
+    var app = angular.module("app", []);
+    app.controller("MainCtrl", ['$scope', '$http', function ($scope, $http) {
+
+        $scope.program = [];
+        $scope.tableData = [];
+        $scope.tuType = null;
+        $scope.waType = null;
+        $scope.tuiType = null;
+        $scope.xieType = null;
+        $scope.distance = null;
+        $scope.part = null;
+        var lian = {'zhuang': 0,'tui': 1,'xie': 2,'dis': 3,'last':4};
+        var lian2 = ['zhuang','tui','xie','dis','last'];
+        var getMainIndex = function(typeIndex){
+            for(var item in $scope.mainIndex){
+                if($scope.mainIndex[item][0] == typeIndex){
+                    return item;
+                }
+            }
+        };
+        $scope.remove = function (item) {
+            for(var i in $scope.tableData){
+                if(item == $scope.tableData[i]){
+                    $scope.tableData.splice(i, 1);
+                }
+            }
+        };
+
+
+        $scope.projectChange = function(part){
+            console.log(part);
+        };
+        $scope.typeChange = function(typeIndex, type){
+
+
+            if('last'==type && typeIndex){
+                var tempData = {};
+                tempData.tuType = typeIndex[0].tuType;
+                tempData.zhuangType = typeIndex[0].zhuangType;
+                tempData.tuiType = typeIndex[0].tuiType;
+                tempData.xieType = typeIndex[0].xieType;
+                tempData.distance = typeIndex[0].distance;
+
+                tempData.projectNum = $scope.part.type[0].num;
+                var length = $scope.tableData.length;
+                if(length == 0){
+                    tempData.ID = 0;
+                }else {
+                    tempData.ID = $scope.tableData[length-1].ID + 1;
+                }
+
+                tempData.zhuangE = tempData.projectNum/100*typeIndex[0].zhuangTaishiUnit*getUnit("挖掘机", tempData.zhuangType+'m3');
+                tempData.tuiE = tempData.projectNum/100*typeIndex[0].tuiTaishiUnit*getUnit("推土机", tempData.tuiType+'kw');
+                tempData.xieE =  tempData.projectNum/100*typeIndex[0].xieTaishiUnit*getUnit("自卸汽车", tempData.xieType+'t');
+                $scope.tableData.push(tempData);
+                console.log($scope.tableData);
+            }else if(typeIndex){
+                for(var i = lian[type]; i < 5; i++) {
+                    $scope[lian2[i]+'Index'] = {};
+                }
+                $scope[type+'Index'] = G.groupBy(typeIndex, function (item) {
+                    if(type == 'dis'){
+                        return [item['distance']];
+                    }
+                    return [item[type+"Type"]];
+                });
+            }
+            console.log($scope[type+'Index']);
+        };
+
+        url = 'http://localhost:3000/tidianzhuang';
+        $http({
+            method: 'GET',
+            //url: '/tushi/tuDianWa/'
+            url: url
+        }).then(
+            function success(response){
+                $scope.program = response.data.result;
+                $scope.tuIndex = G.groupBy($scope.program, function (item) {
+                    return [item.tuType];
+                });
+                //$scope.tuType = $scope.tuIndex[0][0].tuType;
+
+                console.log($scope.mainIndex);
+                console.log($scope.program);
+            },
+            function error(response){
+
+            }
+        );
+
+        url = 'http://localhost:3000/project';
+        $http({
+            method: 'GET',
+            //url: '/tushi/tuDianWa/'
+            url: url
+        }).then(
+            function success(response){
+                $scope.project = response.data;
+
+            },
+            function error(response){
+
+            }
+        );
+
+        var getUnit = function(equipment, type) {
+            var temp = $scope.jixieEnergyUnit;
+            for(var item in temp){
+                if(temp[item].equipment == equipment && temp[item].type == type){
+                    return temp[item].taishiDianUnit?temp[item].taishiDianUnit:temp[item].taishiYouUnit;
+                }
+            }
+        }
+        url = 'http://localhost:3000/jixieEnergyUnit';
+        $http({
+            method: 'GET',
+            //url: '/tushi/tuDianWa/'
+            url: url
+        }).then(
+            function success(response){
+                $scope.jixieEnergyUnit = response.data.result;
+                console.log($scope.jixieEnergyUnit);
+            },
+            function error(response){
+
+            }
+        );
+
+
+
+
+
+        var dom = document.getElementById("echartcontainer");
+        var myChart = echarts.init(dom);
+        var app = {};
+        option = null;
+        app.title = '极坐标系下的堆叠柱状图';
+
+        option = {
+            angleAxis: {
+                type: 'category',
+                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                z: 10
+            },
+            radiusAxis: {
+            },
+            polar: {
+            },
+            series: [{
+                type: 'bar',
+                data: [1, 2, 3, 4, 3, 5, 1],
+                coordinateSystem: 'polar',
+                name: 'A',
+                stack: 'a'
+            }, {
+                type: 'bar',
+                data: [2, 4, 6, 1, 3, 2, 1],
+                coordinateSystem: 'polar',
+                name: 'B',
+                stack: 'a'
+            }, {
+                type: 'bar',
+                data: [1, 2, 3, 4, 1, 2, 5],
+                coordinateSystem: 'polar',
+                name: 'C',
+                stack: 'a'
+            }],
+            legend: {
+                show: true,
+                data: ['A', 'B', 'C']
+            }
+        };
+        ;
+        if (option && typeof option === "object") {
+            myChart.setOption(option, true);
+        }
+    }]);
+</script>
+
+</body>
+</html>
+
+
+
+
