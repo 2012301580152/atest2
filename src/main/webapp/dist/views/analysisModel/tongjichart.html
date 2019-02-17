@@ -20,6 +20,7 @@
 
     <script src="../../layuiadmin/layui/layui.js"></script>
     <script src="../../layuiadmin/js/angular.min.js"></script>
+    <script src="../../layuiadmin/js/echarts.min.js"></script>
 
     <style>
         td,th
@@ -36,27 +37,61 @@
 
         <div class="col-md-12">
 
-            <div>按水库分类（一张图）
+            <div>
+                <!--<div id="main" style="width: 600px;height:400px;"></div>-->
+                <div><button ng-click="drawchartTotal()">绘制项目能耗图</button></div>
 
-                <div ng-repeat="(key, value) in finalResult">
-                    <div>按工程类型分类（一个水库一张图）</div>
+                <div class="panel panel-default collapse in">
+                    <div class="panel-body">
+                        <div class="col-md-12">
 
+                            <h2 class="page-header" ng-show="TotalChartEnable">{{key}}工程部位能耗图</h2>
 
+                            <div class="col-md-3" id="EChart" style="height:400px;"></div>
+                            <div class="col-md-3" id="OChart" style="height:400px;"></div>
+                            <div class="col-md-3" id="coalChart" style="height:400px;"></div>
+                            <div class="col-md-3" id="amountChart" style="height:400px;"></div>
+                        </div>
+                    </div>
+                    <div class="panel-footer"></div>
+                </div>
 
-                    <div>按施工方式分一个水库一个项目一张图</div>
-
+                <div>
+                    <button ng-click="drawchartOfDam()">绘制工程部位能耗图</button>
                 </div>
 
 
+                <div ng-repeat="(key, value) in finalResult">
+                    <!--<div class="col-md-3" id="{{key}}" style="height:400px;"> {{key}} </div>-->
+                    <div class="panel panel-default collapse in" ng-show="TotalChartEnable">
+                        <div class="panel-body">
+                            <div class="col-md-12">
 
+                                <!--<h2>{{projectType[3].projectType}}</h2>-->
+                                <h2 class="page-header">{{key}}工程部位能耗图</h2>
+
+                                <div class="col-md-3" id="{{'E'+key}}" style="height:400px;"></div>
+                                <div class="col-md-3" id="{{'O'+key}}" style="height:400px;"></div>
+                                <div class="col-md-3" id="{{'coal'+key}}" style="height:400px;"></div>
+                                <div class="col-md-3" id="{{'amount'+key}}" style="height:400px;"></div>
+
+                                <div ng-repeat="(key1, value1) in value">
+                                    <div><h3>{{key1}}施工方式能耗图</h3></div>
+                                    <div class="col-md-3" id="{{'E'+key+key1}}" style="height:400px;"></div>
+                                    <div class="col-md-3" id="{{'O'+key+key1}}" style="height:400px;"></div>
+                                    <div class="col-md-3" id="{{'coal'+key+key1}}" style="height:400px;"></div>
+                                    <div class="col-md-3" id="{{'amount'+key+key1}}" style="height:400px;"></div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer"></div>
+                    </div>
+
+                </div>
             </div>
 
-
         </div>
-
-
-
-
     </div>
 </div>
 
@@ -74,21 +109,6 @@
         $scope.calcResult = layui.data("angularResult");
 
         $scope.finalResult = $scope.calcResult['finalResult'];
-
-        $scope.chart = {
-            "Chart":{
-                'category':["asd",'sd','sd'],
-                'Enum':[12,32,43],
-                'Onum':[12,32,43],
-                'coalnum':[12,32,43]
-            },
-            "asd": {
-
-            }
-
-
-
-        };
 
         var addto = function(a, b) {
            a[a.length-1] += b;
@@ -149,49 +169,119 @@
 
         console.log($scope.chart);
 
-        // for(var key in finalResult){
-        //
-        //     for (var key1 in finalResult[key]) {
-        //         // console.log(finalResult[key][key1]);
-        //         // 总计
-        //         var value = finalResult[key][key1];
-        //         var total = { 'EResult': 0, 'OResult': 0,'amount': 0,'name': "总计", 'coal':0, 'percent':1};
-        //         for (var key2 in finalResult[key][key1]) {
-        //             // 折合煤
-        //             value[key2]['coal'] = 0.02*value[key2]['EResult'] + 0.01*value[key2]['OResult'];
-        //
-        //             total['EResult'] += value[key2]['EResult'];
-        //             total['OResult'] += value[key2]['OResult'];
-        //             total['amount'] += value[key2]['amount'];
-        //             total['coal'] += value[key2]['coal'];
-        //
-        //             // console.log(finalResult[key][key1][key2]);
-        //         }
-        //
-        //         value['total'] = total;
-        //
-        //         for (var key2 in finalResult[key][key1]) {
-        //             // 折合煤
-        //             value[key2]['percent'] = value[key2]['coal']/value['total']['coal'];
-        //
-        //             value['total']['EResult'] += value[key2]['EResult'];
-        //             value['total']['OResult'] += value[key2]['OResult'];
-        //             value['total']['amount'] += value[key2]['amount'];
-        //             value['total']['coal'] += value[key2]['coal'];
-        //
-        //             // console.log(finalResult[key][key1][key2]);
-        //         }
-        //     }
-        // }
+        // 基于准备好的dom，初始化echarts实例
 
-        // saveDataToFinalResult($scope.finalResult, projectname, projectPart, $scope.demoResult);
+        var drawChart = function (div, category, nums, text, legend) {
+            var myChart = echarts.init(document.getElementById(div));
 
-        // checkNameExit($scope.finalResult, projectName);
-        //     layui.data("angularResult", {
-        //         key: "finalResult"
-        //         ,value: $scope.finalResult
-        //     });
-        // };
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: text
+                },
+                tooltip: {},
+                legend: {
+                    data:[legend]
+                },
+                xAxis: {
+                    data: category
+                },
+                yAxis: {
+                    type: 'value',
+                    name: legend,
+                    axisTick: {
+                        inside: true
+                    },
+                    scale: true,
+                    axisLabel: {
+                        margin: 2,
+                        formatter: function (value, index) {
+                            if (value >= 10000 && value < 10000000) {
+                                value = value / 10000 + "万";
+                            } else if (value >= 100000000) {
+                                value = value / 100000000 + "亿";
+                            }
+                            return value;
+                        }
+                    },
+                },
+                series: [{
+                    name: legend,
+                    type: 'bar',
+                    data: nums
+                }],
+                grid: {
+                    left: 35
+                },
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        };
+
+        // <div id="EChart"></div>
+        //         <div id="OChart"></div>
+        //         <div id="coalChart"></div>
+        //         <div id="amountChart"></div>
+
+        $scope.TotalChartEnable = false;
+
+        $scope.drawchartTotal = function() {
+
+            $scope.TotalChartEnable = true;
+
+            drawChart('EChart', $scope.chart['chart']['category'], $scope.chart['chart']['Enum'], '耗电', '耗电');
+
+            drawChart('OChart', $scope.chart['chart']['category'], $scope.chart['chart']['Onum'], '耗油', '耗油');
+            drawChart('coalChart', $scope.chart['chart']['category'], $scope.chart['chart']['coalnum'], '折合煤', '折合煤');
+            drawChart('amountChart', $scope.chart['chart']['category'], $scope.chart['chart']['amount'], '工作量', '工作量');
+
+        };
+
+
+        //
+
+        $scope.ChartDamEnable = false;
+        $scope.drawchartOfDam = function() {
+
+            $scope.ChartDamEnable = true;
+            for (var key in $scope.finalResult) {
+
+            // <div class="col-md-3" id="{{'E'+key}}" style="height:400px;"></div>
+            //         <div class="col-md-3" id="{{'O'+key}}" style="height:400px;"></div>
+            //         <div class="col-md-3" id="{{'coal'+key}}" style="height:400px;"></div>
+            //         <div class="col-md-3" id="{{'amount'+key}}" style="height:400px;"></div>
+                var mychart = $scope.chart[key]['chart'];
+
+                drawChart('E'+key, mychart['category'], mychart['Enum'], '耗电', '耗电');
+                drawChart('O'+key, mychart['category'], mychart['Onum'], '耗油', '耗油');
+                drawChart('coal'+key, mychart['category'], mychart['coalnum'], '折合煤', '折合煤');
+                drawChart('amount'+key, mychart['category'], mychart['amount'], '工作量', '工作量');
+
+                console.log(key);
+
+                // drawChart(key, $scope.chart['chart']['category'], $scope.chart['chart']['amount'], '工作量', '工作量');
+
+                for (var key1 in $scope.finalResult[key]) {
+
+                // <div class="col-md-3" id="{{'E'+key+key1}}" style="height:400px;"></div>
+                //         <div class="col-md-3" id="{{'O'+key+key1}}" style="height:400px;"></div>
+                //         <div class="col-md-3" id="{{'coal'+key+key1}}" style="height:400px;"></div>
+                //         <div class="col-md-3" id="{{'amount'+key+key1}}" style="height:400px;"></div>
+
+                    mychart = $scope.chart[key][key1]['chart'];
+
+                    drawChart('E'+key+key1, mychart['category'], mychart['Enum'], '耗电', '耗电');
+                    drawChart('O'+key+key1, mychart['category'], mychart['Onum'], '耗油', '耗油');
+                    drawChart('coal'+key+key1, mychart['category'], mychart['coalnum'], '折合煤', '折合煤');
+                    drawChart('amount'+key+key1, mychart['category'], mychart['amount'], '工作量', '工作量');
+
+
+                }
+
+                // $scope.chart[key]['chart'] = chart;
+            }
+        };
 
 
 
