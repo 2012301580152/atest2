@@ -325,6 +325,43 @@ app.controller("MainCtrl", ['$scope', '$http', '$q','$filter', function ($scope,
             }
         }
 
+        var finalResult = $scope.finalResult;
+
+        for(var key in finalResult){
+
+            for (var key1 in finalResult[key]) {
+                // console.log(finalResult[key][key1]);
+                // 总计
+                var value = finalResult[key][key1];
+                var total = { 'EResult': 0, 'OResult': 0,'amount': 0,'name': "总计", 'coal':0, 'percent':1};
+                for (var key2 in finalResult[key][key1]) {
+                    // 折合煤
+                    value[key2]['coal'] = 0.02*value[key2]['EResult'] + 0.01*value[key2]['OResult'];
+
+                    total['EResult'] += value[key2]['EResult'];
+                    total['OResult'] += value[key2]['OResult'];
+                    total['amount'] += value[key2]['amount'];
+                    total['coal'] += value[key2]['coal'];
+
+                    // console.log(finalResult[key][key1][key2]);
+                }
+
+                value['total'] = total;
+
+                for (var key2 in finalResult[key][key1]) {
+                    // 折合煤
+                    value[key2]['percent'] = value[key2]['coal']/value['total']['coal'];
+
+                    value['total']['EResult'] += value[key2]['EResult'];
+                    value['total']['OResult'] += value[key2]['OResult'];
+                    value['total']['amount'] += value[key2]['amount'];
+                    value['total']['coal'] += value[key2]['coal'];
+
+                    // console.log(finalResult[key][key1][key2]);
+                }
+            }
+        }
+
         // saveDataToFinalResult($scope.finalResult, projectname, projectPart, $scope.demoResult);
 
         // checkNameExit($scope.finalResult, projectName);

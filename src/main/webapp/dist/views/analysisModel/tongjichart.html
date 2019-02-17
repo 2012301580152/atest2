@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>定额-土方施工机械-水电-挖装运</title>
+
+    <!-- Bootstrap -->
+    <link href="../../layuiadmin/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <script src="../../layuiadmin/layui/layui.js"></script>
+    <script src="../../layuiadmin/js/angular.min.js"></script>
+
+    <style>
+        td,th
+        {
+            vertical-align: middle !important;
+            text-align:center;
+        }
+    </style>
+
+</head>
+<body ng-app="app" style="height: 100%; margin: 0">
+<div class="container-fluid" ng-controller="MainCtrl as Ctrl">
+    <div class="row" >
+
+        <div class="col-md-12">
+
+            <div>按水库分类（一张图）
+
+                <div ng-repeat="(key, value) in finalResult">
+                    <div>按工程类型分类（一个水库一张图）</div>
+
+
+
+                    <div>按施工方式分一个水库一个项目一张图</div>
+
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+    </div>
+</div>
+
+
+
+<script src="../../layuiadmin/js/jquery-1.11.0.min.js"></script>
+
+<script src="../../layuiadmin/js/bootstrap.min.js"></script>
+
+<script>
+    var app = angular.module("app", []);
+
+    app.controller("MainCtrl", ['$scope', '$http', function ($scope, $http) {
+
+        $scope.calcResult = layui.data("angularResult");
+
+        $scope.finalResult = $scope.calcResult['finalResult'];
+
+        $scope.chart = {
+            "Chart":{
+                'category':["asd",'sd','sd'],
+                'Enum':[12,32,43],
+                'Onum':[12,32,43],
+                'coalnum':[12,32,43]
+            },
+            "asd": {
+
+            }
+
+
+
+        };
+
+        var addto = function(a, b) {
+           a[a.length-1] += b;
+        };
+
+        $scope.chart = {};
+
+        $scope.chart['chart'] = {'category':[], 'Enum':[], 'Onum':[], 'coalnum':[], 'amount':[]};
+        for (var key in $scope.finalResult) {
+
+            $scope.chart['chart']['category'].push(key);
+            $scope.chart['chart']['Enum'].push(0);
+            $scope.chart['chart']['Onum'].push(0);
+            $scope.chart['chart']['coalnum'].push(0);
+            $scope.chart['chart']['amount'].push(0);
+
+            $scope.chart[key] = {};
+
+            var chart = {'category':[], 'Enum':[], 'Onum':[], 'coalnum':[], 'amount':[]};
+
+            for (var key1 in $scope.finalResult[key]) {
+
+
+                $scope.chart[key][key1] = {};
+                var value = $scope.finalResult[key][key1];
+
+                addto($scope.chart['chart']['Enum'],value['total']['EResult']);
+                addto($scope.chart['chart']['Onum'],value['total']['OResult']);
+                addto($scope.chart['chart']['coalnum'],value['total']['coal']);
+                addto($scope.chart['chart']['amount'],value['total']['amount']);
+
+                chart['category'].push(key1);
+                chart['Enum'].push(value['total']['EResult']);
+                chart['Onum'].push(value['total']['OResult']);
+                chart['coalnum'].push(value['total']['coal']);
+                chart['amount'].push(value['total']['amount']);
+
+                var chart1 = {'category':[], 'Enum':[], 'Onum':[], 'coalnum':[], 'amount':[]};
+                for (var key2 in value) {
+                    if (key2!='total') {
+                        chart1['category'].push(value[key2]['name']);
+                        chart1['Enum'].push(value[key2]['EResult']);
+                        chart1['Onum'].push(value[key2]['OResult']);
+                        chart1['coalnum'].push(value[key2]['coal']);
+                        chart1['amount'].push(value[key2]['amount']);
+                    }
+
+                }
+
+                $scope.chart[key][key1]['chart'] = chart1;
+
+
+
+            }
+
+            $scope.chart[key]['chart'] = chart;
+        }
+
+        console.log($scope.chart);
+
+        // for(var key in finalResult){
+        //
+        //     for (var key1 in finalResult[key]) {
+        //         // console.log(finalResult[key][key1]);
+        //         // 总计
+        //         var value = finalResult[key][key1];
+        //         var total = { 'EResult': 0, 'OResult': 0,'amount': 0,'name': "总计", 'coal':0, 'percent':1};
+        //         for (var key2 in finalResult[key][key1]) {
+        //             // 折合煤
+        //             value[key2]['coal'] = 0.02*value[key2]['EResult'] + 0.01*value[key2]['OResult'];
+        //
+        //             total['EResult'] += value[key2]['EResult'];
+        //             total['OResult'] += value[key2]['OResult'];
+        //             total['amount'] += value[key2]['amount'];
+        //             total['coal'] += value[key2]['coal'];
+        //
+        //             // console.log(finalResult[key][key1][key2]);
+        //         }
+        //
+        //         value['total'] = total;
+        //
+        //         for (var key2 in finalResult[key][key1]) {
+        //             // 折合煤
+        //             value[key2]['percent'] = value[key2]['coal']/value['total']['coal'];
+        //
+        //             value['total']['EResult'] += value[key2]['EResult'];
+        //             value['total']['OResult'] += value[key2]['OResult'];
+        //             value['total']['amount'] += value[key2]['amount'];
+        //             value['total']['coal'] += value[key2]['coal'];
+        //
+        //             // console.log(finalResult[key][key1][key2]);
+        //         }
+        //     }
+        // }
+
+        // saveDataToFinalResult($scope.finalResult, projectname, projectPart, $scope.demoResult);
+
+        // checkNameExit($scope.finalResult, projectName);
+        //     layui.data("angularResult", {
+        //         key: "finalResult"
+        //         ,value: $scope.finalResult
+        //     });
+        // };
+
+
+
+
+        $scope.mylegend = [{name:"柴油（kg）",index:"OResult"}, {name:"电",index:"EResult"}];
+
+
+
+    }]);
+</script>
+
+
+</body>
+</html>
