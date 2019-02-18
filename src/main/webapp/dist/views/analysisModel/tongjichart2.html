@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>定额-土方施工机械-水电-挖装运</title>
+
+    <!-- Bootstrap -->
+    <link href="../../layuiadmin/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <script src="../../layuiadmin/layui/layui.js"></script>
+    <script src="../../layuiadmin/js/angular.min.js"></script>
+    <script src="../../layuiadmin/js/echarts.min.js"></script>
+    <!--<script src="../../layuiadmin/js/bootstrap.min.js"></script>-->
+
+    <style>
+        td,th
+        {
+            vertical-align: middle !important;
+            text-align:center;
+        }
+    </style>
+
+</head>
+<body ng-app="app" style="height: 100%; margin: 0">
+<div class="container-fluid" ng-controller="MainCtrl as Ctrl">
+    <div class="row" >
+
+        <div class="col-md-12">
+
+            <div>
+                <!--<div id="main" style="width: 600px;height:400px;"></div>-->
+                <div><button type="button" class="btn btn-primary" ng-click="drawchartTotal()">绘制项目能耗图</button></div>
+
+                <div class="panel panel-default collapse in">
+                    <div class="panel-body">
+                        <div class="col-md-12">
+
+                            <h2 class="page-header" ng-show="TotalChartEnable">{{key}}工程部位能耗图</h2>
+
+                            <div id="AllChart" style="height:400px;"></div>
+
+                        </div>
+                    </div>
+                    <div class="panel-footer"></div>
+                </div>
+
+                <div>
+                    <button type="button" class="btn btn-primary" ng-click="drawchartOfDam()">绘制工程部位能耗图</button>
+                </div>
+
+
+                <div ng-repeat="(key, value) in finalResult">
+                    <!--<div class="col-md-3" id="{{key}}" style="height:400px;"> {{key}} </div>-->
+                    <div class="panel panel-default collapse in" ng-show="TotalChartEnable">
+                        <div class="panel-body">
+                            <div class="col-md-12">
+
+                                <!--<h2>{{projectType[3].projectType}}</h2>-->
+                                <h2 class="page-header">{{key}}工程部位能耗图</h2>
+
+                                <div id="{{'All'+key}}" style="height:400px;"></div>
+
+                                <div ng-repeat="(key1, value1) in value">
+                                    <div><h3>{{key1}}施工方式能耗图</h3></div>
+                                    <div id="{{'All'+key+key1}}" style="height:400px;"></div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer"></div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<script src="../../layuiadmin/js/jquery-1.11.0.min.js"></script>
+
+<script src="../../layuiadmin/js/bootstrap.min.js"></script>
+
+<script src="../../layuiadmin/js/tongjichart2.js"></script>
+
+
+</body>
+</html>

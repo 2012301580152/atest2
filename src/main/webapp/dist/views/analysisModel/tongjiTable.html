@@ -37,47 +37,59 @@
         <div class="col-md-12">
 
             <div ng-repeat="(key, value) in calcResult">
-                <p>{{key}}</p>
+                <!--<p>{{key}}</p>-->
                 <div ng-repeat="(key1, value1) in value">
-                    <p>{{key1}}</p>
 
-                    <div ng-repeat="(key2, value2) in value1">
-                        <p>{{key2}}</p>
+                    <div class="panel panel-default collapse in">
+                        <div class="panel-body">
 
-                        <table class="table table-bordered" align="center">
-                            <thead>
-                            <tr>
-                                <!--<th>ID</th>-->
-                                <th rowspan="2">耗能设施（设备和项目）</th>
-                                <th colspan="2">能耗</th>
-                                <th rowspan="2">折合标准煤（t）</th>
-                                <th rowspan="2">比例（％）</th>
-                            </tr>
+                            <h2>{{key1}}</h2>
 
-                            <tr>
-                                <!--<th>ID</th>-->
-                                <th>种类</th>
-                                <th>数量</th>
-                            </tr>
-                            </thead>
+                            <div ng-repeat="(key2, value2) in value1">
+                                <h3>{{key2}}</h3>
 
+                                <table class="table table-bordered" align="center">
+                                    <thead>
+                                    <tr>
+                                        <!--<th>ID</th>-->
+                                        <th rowspan="2">耗能设施（设备和项目）</th>
+                                        <th colspan="2">能耗</th>
+                                        <th rowspan="2">折合标准煤（t）</th>
+                                        <th rowspan="2">比例（％）</th>
+                                    </tr>
 
-                            <tbody ng-repeat="(key3, value3) in value2">
-                            <tr ng-repeat="item in mylegend">
-                                <td ng-if="$index==0" rowspan="2">{{value3.name}}</td>
-
-                                <td>{{item.name}}</td>
-                                <td>{{value3[item.index] | number:0}}</td>
-                                <td ng-if="$index==0" rowspan="2">{{value3.coal | number:0}}</td>
-                                <td ng-if="$index==0" rowspan="2">{{value3.percent*100  | number:2}}%</td>
-                            </tr>
+                                    <tr>
+                                        <!--<th>ID</th>-->
+                                        <th>种类</th>
+                                        <th>数量</th>
+                                    </tr>
+                                    </thead>
 
 
+                                    <tbody ng-repeat="(key3, value3) in value2">
+                                    <tr ng-repeat="item in mylegend">
+                                        <td ng-if="$index==0" rowspan="2">{{value3.name}}</td>
+
+                                        <td>{{item.name}}</td>
+                                        <td>{{value3[item.index] | number:0}}</td>
+                                        <td ng-if="$index==0" rowspan="2">{{value3.coal | number:0}}</td>
+                                        <td ng-if="$index==0" rowspan="2">{{value3.percent*100  | number:2}}%</td>
+                                    </tr>
 
 
-                            </tbody>
-                        </table>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+                        </div>
+                        <div class="panel-footer"></div>
                     </div>
+
+
 
 
 

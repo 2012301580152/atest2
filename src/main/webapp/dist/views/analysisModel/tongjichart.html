@@ -39,7 +39,7 @@
 
             <div>
                 <!--<div id="main" style="width: 600px;height:400px;"></div>-->
-                <div><button ng-click="drawchartTotal()">绘制项目能耗图</button></div>
+                <div><button type="button" class="btn btn-primary"  ng-click="drawchartTotal()">绘制项目能耗图</button></div>
 
                 <div class="panel panel-default collapse in">
                     <div class="panel-body">
@@ -57,7 +57,7 @@
                 </div>
 
                 <div>
-                    <button ng-click="drawchartOfDam()">绘制工程部位能耗图</button>
+                    <button type="button" class="btn btn-primary" ng-click="drawchartOfDam()">绘制工程部位能耗图</button>
                 </div>
 
 
@@ -196,7 +196,7 @@
                     axisLabel: {
                         margin: 2,
                         formatter: function (value, index) {
-                            if (value >= 10000 && value < 10000000) {
+                            if (value >= 10000 && value < 100000000) {
                                 value = value / 10000 + "万";
                             } else if (value >= 100000000) {
                                 value = value / 100000000 + "亿";
@@ -211,7 +211,7 @@
                     data: nums
                 }],
                 grid: {
-                    left: 35
+                    left: 45
                 },
             };
 
