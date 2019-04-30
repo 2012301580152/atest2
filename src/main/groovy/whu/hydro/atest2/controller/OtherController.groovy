@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import whu.hydro.atest2.common.Result
 import whu.hydro.atest2.common.ResultEnum
+import whu.hydro.atest2.entity.ProjectAmount
 import whu.hydro.atest2.entity.UnitEnergy
 import whu.hydro.atest2.repository.ProjectAmountRepository
 import whu.hydro.atest2.repository.UnitEnergyRepository
@@ -29,6 +30,28 @@ class OtherController {
 
     @Autowired
     UnitEnergyRepository unitEnergyRepository
+
+    @RequestMapping("/saveprojectamount")
+
+    void saveProjectAmountAll(@RequestBody List<ProjectAmount> projects){
+
+        List list = projectAmountRepository.saveAll(projects)
+
+    }
+
+    @RequestMapping("/deleteprojectbyname")
+    void deleteProjectByName(String name) {
+        projectAmountRepository.deleteByProject_name(name)
+    }
+
+    @RequestMapping("/deleteprojectbyid")
+    void deleteProjectById(Integer[] ids) {
+        for (int i = 0; i < ids.length; i++) {
+            projectAmountRepository.deleteById(ids[i])
+        }
+
+    }
+
 
     @RequestMapping("/projectamount")
 

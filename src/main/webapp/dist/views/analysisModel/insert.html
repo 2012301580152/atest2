@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+    <meta charset="UTF-8">
+    <title>angular 可编辑表格</title>
+
+
+    <link rel='stylesheet' href='https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/angular-xeditable/0.2.0/css/xeditable.css'>
+
+    <link rel="stylesheet" href="../../layuiadmin/css/style.css">
+
+
+</head>
+
+<body>
+
+<div ng-app="app" ng-controller="Ctrl">
+
+    <div>
+        <button>添加</button>
+
+        <select ng-model="myProject" ng-options="project for project in projects" ng-change="selectChange(myProject)"></select>
+
+        <textarea rows="15" ng-model="inputDate" style="width:65%"></textarea>
+
+        <button ng-click="submitData()">提交</button>
+
+        <button ng-click="saveData()"></button>
+
+    </div>
+
+
+
+    <table class="table table-bordered table-hover table-condensed">
+        <tr style="font-weight: bold">
+            <td style="width:20%">Name</td>
+            <td style="width:20%">Status</td>
+            <td style="width:15%">Group</td>
+            <td style="width:15%">Edit</td>
+            <td style="width:15%">Edit</td>
+            <td style="width:15%">Edit</td>
+        </tr>
+
+        <tr ng-repeat="project in tableData">
+            <td>
+                <!-- editable username (text with validation) -->
+                <span editable-text="project.projectName" e-name="Name" e-form="rowform" e-required>
+          {{ project.projectName || 'empty' }}
+        </span>
+            </td>
+            <td>
+                <!-- editable status (select-local) -->
+                <span editable-text="project.projectPart" e-name="Part" e-form="rowform">
+           {{ project.projectPart || 'empty' }}
+        </span>
+            </td>
+            <td>
+                <!-- editable group (select-remote) -->
+                <span editable-text="project.projectType" e-name="Type" e-form="rowform">
+           {{ project.projectType || 'empty' }}
+        </span>
+            </td>
+            <td>
+                <!-- editable group (select-remote) -->
+                <span editable-text="project.amount" e-name="amount" e-form="rowform">
+           {{ project.amount || 'empty' }}
+        </span>
+            </td>
+            <td>
+                <!-- editable group (select-remote) -->
+                <span editable-text="project.type" e-name="Type" e-form="rowform">
+           {{ project.type || 'empty' }}
+        </span>
+            </td>
+            <td style="white-space: nowrap">
+                <!-- form -->
+                <form editable-form name="rowform" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == user">
+                    <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+                        save
+                    </button>
+                    <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+                        cancel
+                    </button>
+                </form>
+                <div class="buttons" ng-show="!rowform.$visible">
+                    <button class="btn btn-primary" ng-click="rowform.$show()">edit</button>
+                    <button class="btn btn-danger" ng-click="removeUser($index)">del</button>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <button class="btn btn-default" ng-click="addUser()">Add row</button>
+</div>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.0.8/angular.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/angular-xeditable/0.2.0/js/xeditable.js'></script>
+
+
+
+<script>
+
+    var app = angular.module("app", ["xeditable"]);
+
+    app.run(function(editableOptions) {
+        editableOptions.theme = 'bs3';
+    });
+
+    app.controller('Ctrl', function($scope, $filter, $http) {
+        var error =  function error(response){
+            console.log("请求失败");
+        };
+
+        $scope.inputDate = "";
+
+        function isNumber(inputData) {
+            //isNaN(inputData)不能判断空串或一个空格
+            //如果是一个空串或是一个空格，而isNaN是做为数字0进行处理的，而parseInt与parseFloat是返回一个错误消息，这个isNaN检查不严密而导致的。
+            if (parseFloat(inputData).toString() == "NaN") {
+                //alert("请输入数字……");注掉，放到调用时，由调用者弹出提示。
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+
+
+        $scope.saveTableData = [];
+
+        $scope.submitData = function() {
+            if($scope.inputDate == "") {alert("请输入工程数据！"); return}
+            var lines = $scope.inputDate.split('\n');
+            var tempPrpjectName = lines[0].split("\t")[0];
+            $scope.saveTableData = [];
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i].split('\t');
+                if(line.length!=5) {alert("输入数据格式不对！第"+i+"行数据不等于5列"); return}
+                if (line[0]!=tempPrpjectName) {alert("每次只能提交一项工程"); return}
+                if(!isNumber(line[3])) {alert("工程量必须为整数"); return}
+                var type = parseInt(line[4]);
+                if(type<1 && type>23) {alert("工程类型必须是1-23"); return}
+                var temp = {"amount": parseFloat(line[3]), "id": null, "projectName": tempPrpjectName, "projectPart": line[1],
+                    "projectType": line[2], remark: "", "type": type};
+                $scope.saveTableData.push(temp);
+            }
+
+            $scope.projects.push(tempPrpjectName);
+            $scope.myProject = tempPrpjectName;
+
+            $scope.selectChange(tempPrpjectName);
+
+
+
+        };
+
+        $scope.saveData = function() {
+
+            var url = "/other/saveprojectamount";
+
+            $http({
+                method : 'POST',
+                url : url,
+                data: JSON.stringify($scope.saveTableData)
+            }).then(function success(response){
+
+            },error);
+        };
+
+        var url = "/other/projectamount";
+        $scope.projects = [];
+        $scope.tableData = [];
+        $scope.myProject = "";
+
+        var hasProjects = function(name) {
+            for (var i = 0; i < $scope.projects.length; i++) {
+                if ($scope.projects[i]==name) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        $scope.selectChange = function(myProject) {
+            $scope.tableData = [];
+            for (var i = 0; i < $scope.projectamount.length; i++) {
+
+                if($scope.myProject==$scope.projectamount[i].projectName) {
+
+                    $scope.tableData.push($scope.projectamount[i]);
+                }
+            }
+
+            for (var i = 0; i < $scope.saveTableData.length; i++) {
+
+                if($scope.myProject==$scope.saveTableData[i].projectName) {
+
+                    $scope.tableData.push($scope.saveTableData[i]);
+                }
+            }
+        };
+
+        $http.get(url).then(function success(response){
+            $scope.projectamount = response.data;
+            for (var i = 0; i < $scope.projectamount.length; i++) {
+                if (!hasProjects($scope.projectamount[i].projectName)) {
+                    $scope.projects.push($scope.projectamount[i].projectName)
+                }
+                $scope.myProject = $scope.projects[0];
+                if($scope.projects[0]==$scope.projectamount[i].projectName) {
+                    $scope.tableData.push($scope.projectamount[i]);
+                }
+            }
+            console.log($scope.projectamount);
+        },error);
+
+
+
+        $scope.showGroup = function(user) {
+            if(user.group && $scope.groups.length) {
+                var selected = $filter('filter')($scope.groups, {id: user.group});
+                return selected.length ? selected[0].text : 'Not set';
+            } else {
+                return user.groupName || 'Not set';
+            }
+        };
+
+        $scope.showStatus = function(user) {
+            var selected = [];
+            if(user.status) {
+                selected = $filter('filter')($scope.statuses, {value: user.status});
+            }
+            return selected.length ? selected[0].text : 'Not set';
+        };
+
+        // remove user
+        $scope.removeUser = function(index) {
+            $scope.projectamount.splice(index, 1);
+        };
+
+        // add user
+        $scope.addUser = function() {
+            $scope.inserted = {
+                id: $scope.projectamount.length+1,
+                name: '',
+                status: null,
+                group: null
+            };
+            $scope.projectamount.push($scope.inserted);
+        };
+    });
+</script>
+
+
+
+
+</body>
+
+</html>

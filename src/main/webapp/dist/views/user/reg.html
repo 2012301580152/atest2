@@ -73,44 +73,44 @@
     ,form = layui.form
     ,router = layui.router();
 
-    form.render();
-
-    //提交
-    form.on('submit(LAY-user-reg-submit)', function(obj){
-      var field = obj.field;
-      
-      //确认密码
-      if(field.password !== field.repass){
-        return layer.msg('两次密码输入不一致');
-      }
-      
-      //是否同意用户协议
-      if(!field.agreement){
-        return layer.msg('你必须同意用户协议才能注册');
-      }
-      
-      //请求接口
-      admin.req({
-        url: '/user/reg' //实际使用请改成服务端真实接口
-        // ,meth
-        ,data: field
-        ,done: function(res){        
-          layer.msg(res['msg'], {
-            offset: '15px'
-            ,icon: 1
-            ,time: 1000
-          }, function(){
-            // location.hash = 'login.html'; //跳转到登入页
-            if(res['data']!=null){
-              location.replace("login.html");
-            }
-
-          });
-        }
-      });
-      
-      return false;
-    });
+    // form.render();
+    //
+    // //提交
+    // form.on('submit(LAY-user-reg-submit)', function(obj){
+    //   var field = obj.field;
+    //
+    //   //确认密码
+    //   if(field.password !== field.repass){
+    //     return layer.msg('两次密码输入不一致');
+    //   }
+    //
+    //   //是否同意用户协议
+    //   if(!field.agreement){
+    //     return layer.msg('你必须同意用户协议才能注册');
+    //   }
+    //
+    //   //请求接口
+    //   admin.req({
+    //     url: '/user/reg' //实际使用请改成服务端真实接口
+    //     // ,meth
+    //     ,data: field
+    //     ,done: function(res){
+    //       layer.msg(res['msg'], {
+    //         offset: '15px'
+    //         ,icon: 1
+    //         ,time: 1000
+    //       }, function(){
+    //         // location.hash = 'login.html'; //跳转到登入页
+    //         if(res['data']!=null){
+    //           location.replace("login.html");
+    //         }
+    //
+    //       });
+    //     }
+    //   });
+    //
+    //   return false;
+    // });
   });
   </script>
 </body>

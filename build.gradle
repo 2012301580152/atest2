@@ -13,8 +13,11 @@ buildscript {
     }
 }
 
+
+
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
+apply plugin: 'war'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
@@ -24,6 +27,12 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+}
+
+processResources {
+    from('src/main/webapp') {
+        include '**/*.*'
+    }
 }
 
 
@@ -47,6 +56,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/p6spy/p6spy
 //    compile group: 'p6spy', name: 'p6spy', version: '3.8.0'
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 
 
 
